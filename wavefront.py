@@ -107,3 +107,4 @@ def save_obj( obj: WavefrontOBJ, filename: str ):
                 vstr = vstr.replace('/X/','//').replace('/X ', ' ')
                 pstr += vstr
             ofile.write( pstr+'\n')
+
