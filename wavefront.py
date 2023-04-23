@@ -28,7 +28,72 @@ class WavefrontOBJ:
                 face.append( indices[0] )
             all_faces.append( face )
         return all_faces
-
+    
+    ### return boundary vertices
+    def boundary_vertices( self ):
+        bdry_v= set()
+        darts = {}
+        faces = self.only_faces()
+        for f in faces:
+            for i in range( len(f) ):
+                if ( f[i] in darts ):
+                    darts[ f[ i ] ].append( f[ (i+1)%len(f) ] )
+                else:
+                    darts[ f[ i ] ] = [ f[ (i+1)%len(f) ] ]
+        for i, i_list in darts.items():
+            for j in i_list:
+                j_list = darts[ j ]
+                if ( not i in j_list ):
+                    bdry_v.add( i )
+                    bdry_v.add( j )
+        return bdry_v
+    
+    ### return boundary edges
+    def boundary_edges( self ):
+        bdry_e= set()
+        darts = {}
+        faces = self.only_faces()
+        for f in faces:
+            for i in range( len(f) ):
+                if ( f[i] in darts ):
+                    darts[ f[ i ] ].append( f[ (i+1)%len(f) ] )
+                else:
+                    darts[ f[ i ] ] = [ f[ (i+1)%len(f) ] ]
+        for i, i_list in darts.items():
+            for j in i_list:
+                j_list = darts[ j ]
+                if ( not i in j_list ):
+                    bdry_e.add( (j,i) )
+        return bdry_e
+    
+    ### return boundary edges
+    def numpy_boundary_edges( self ):
+        edges    = self.boundary_edges()
+        np_edges = np.zeros( ( len(edges), 2 ), np.int32 )
+        k        = 0;
+        for e in edges:
+            np_edges[k][0]=e[0]
+            np_edges[k][1]=e[1]
+            k = k+1
+        return np_edges
+    
+    def ordered_boundary( self ):
+        edges    = self.boundary_edges()
+        if len(edges)==0:
+            return []
+        d        = {}
+        first = -1
+        for e in edges:
+            d[ e[0] ] = e[1]
+            if first == -1:
+                first = e[ 0 ]
+        list_e = [first]
+        cur   = d[ first ]
+        while cur != first:
+            list_e.append( cur )
+            cur = d[ cur ]
+        return list_e
+    
 def load_obj( filename: str, default_mtl='default_mtl', triangulate=False ) -> WavefrontOBJ:
     """Reads a .obj file from disk and returns a WavefrontOBJ instance
 
@@ -107,4 +172,10 @@ def save_obj( obj: WavefrontOBJ, filename: str ):
                 vstr = vstr.replace('/X/','//').replace('/X ', ' ')
                 pstr += vstr
             ofile.write( pstr+'\n')
+
+
+
+    
+    
+
 
