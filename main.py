@@ -13,7 +13,9 @@ ps_mesh = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_face
 #ps.register_surface_mesh("my mesh", verts, faces )
 # bdry  = obj.numpy_boundary_edges()
 # ps_net= ps.register_curve_network("boundary", obj.only_coordinates(), bdry )
-L = obj.ordered_boundary()
-print(L)
+
 
 ps.show()
+
+L = obj.ordered_boundary()
+print(L)
