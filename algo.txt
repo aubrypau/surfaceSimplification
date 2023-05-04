@@ -1,0 +1,11 @@
+1. Compute the Q matrices for all the initial vertices.
+
+2. Select all valid pairs.
+
+3. Compute the optimal contraction target v ̄ for each valid pair (v1 , v2 ).
+     The error v ̄ T (Q1 + Q2 )v ̄ of this target vertex becomes the cost of contracting that pair.
+
+4. Place all the pairs in a heap keyed on cost with the minimum cost pair at the top.
+
+5. Iteratively remove the pair (v1 , v2 ) of least cost from the heap, contract this pair, and update the costs of all valid pairs involv- ingv1.
+The only remaining issue is how to compute the initial Q matrices from which the error metric 1 is constructed.
