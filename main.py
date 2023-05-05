@@ -27,13 +27,17 @@ def vect(P, p):
         res.append(p[i] - P[i])
     return res
 
-def prodVect(v1, v2):
+# calcul le produit de deux vecteur
+def prodVect(u, v):
     res = [0, 0, 0]
-
+    res[0] = u[1]*v[2] - u[2]*v[1]
+    res[1] = u[2]*v[0] - u[0]*v[2]
+    res[2] = u[0]*v[1] - u[1]*v[0]
     return res
 
-tab = vect([3,5,2],[8,1,3])
+tab = prodVect([3,5,2],[8,1,3])
 print(tab)
+
 
 ############ Etape 2 ############
 
@@ -63,8 +67,8 @@ def all_valid_pairs(obj, t):
             if v1 != v2 and is_edge(v1, v2) or np.linalg.norm(np.subtract(v1, v2)) < t:
                 valid_pairs.append((v1, v2))
 
-all_valid_pairs(obj, t)
-print("valid pairs")
+# all_valid_pairs(obj, t)
+# print("valid pairs")
 # print(valid_pairs)
 
 
