@@ -15,6 +15,25 @@ obj = load_obj( 'test_cube.obj')
 # bdry  = obj.numpy_boundary_edges()
 # ps_net= ps.register_curve_network("boundary", obj.only_coordinates(), bdry )
 
+############ Calculer a b c d pour un plan ############
+
+"""
+Soit un tirangle PRQ, avec P le sommet, calcul les vecteurs PR et PQ
+"""
+# avec P le point P et p le point R ou Q
+def vect(P, p):
+    res = []
+    for i in range(0, 3):
+        res.append(p[i] - P[i])
+    return res
+
+def prodVect(v1, v2):
+    res = [0, 0, 0]
+
+    return res
+
+tab = vect([3,5,2],[8,1,3])
+print(tab)
 
 ############ Etape 2 ############
 
@@ -46,7 +65,7 @@ def all_valid_pairs(obj, t):
 
 all_valid_pairs(obj, t)
 print("valid pairs")
-print(valid_pairs)
+# print(valid_pairs)
 
 
 
@@ -63,7 +82,7 @@ def remove_vertex(obj, vertex_index):
 # remove_vertex(obj, 0)
     
 ps_mesh = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_faces() )
-ps.show()
+#ps.show()
 
 L = obj.ordered_boundary()
 print(L)
