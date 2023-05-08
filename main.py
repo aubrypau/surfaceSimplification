@@ -39,8 +39,6 @@ def getAllFaces(v1):
 """
 Soit un tirangle PRQ, avec P le sommet, calcul les vecteurs PR et PQ
 """
-
-
 # avec P le point P et p le point R ou Q
 def vect(P, p):
     res = []
@@ -57,9 +55,14 @@ def prodVect(u, v):
     res[2] = u[0] * v[1] - u[1] * v[0]
     return res
 
+def normeVect(v):
+    return math.sqrt(v[0]**2 + v[1]**2 + v[2]**2)
 
-tab = prodVect([3, 5, 2], [8, 1, 3])
+
+tab = prodVect([1, 1, 1], [2, 1, 1])
 print(tab)
+norme = normeVect(tab)
+print(norme)
 
 
 ############ Etape 2 ############
