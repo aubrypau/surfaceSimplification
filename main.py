@@ -57,7 +57,6 @@ def vect(P, p):
         res.append(p[i] - P[i])
     return res
 
-
 # calcul le produit de deux vecteur
 def prodVect(u, v):
     res = [0, 0, 0]
@@ -66,15 +65,46 @@ def prodVect(u, v):
     res[2] = u[0] * v[1] - u[1] * v[0]
     return res
 
+# permet de calculer la norme d'un vecteur (distance)
 def normeVect(v):
     return math.sqrt(v[0]**2 + v[1]**2 + v[2]**2)
 
+# calcul un produit vectorielle divisé par sa norme
+def prodVectNormed(u, a):
+    res = []
+    for i in range(3):
+        res.append(u[i] / a)
+    return res
 
-tab = prodVect([1, 1, 1], [2, 1, 1])
-print(tab)
-norme = normeVect(tab)
-print(norme)
+# calcul du prolduit entre le vecteur n et P (l'origine du triangle)
+def scalarProduct(n, P):
+    nb = 0
+    for i in range(3):
+        nb += n[i] * P[i]
+    return nb
 
+# test pour la matrice [ a b c d ]
+P = [1, 4, 8]
+R = [2, 5, 4]
+Q = [6, 2, 3]
+
+PR = vect(P, R)
+# print(PR)
+PQ = vect(P, Q)
+# print(PQ)
+PQPR = prodVect(PQ, PR)
+# print(PQPR)
+
+norme = normeVect(PQPR)
+# print(norme)
+
+n = prodVectNormed(PQPR, norme)
+print(n)
+
+d = scalarProduct(n, P)
+# la matrice a b c d
+n.append(d/norme) 
+print(n)
 
 ############ Etape 2 ############
 
