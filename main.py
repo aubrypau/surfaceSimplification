@@ -10,11 +10,11 @@ MINIMUM_FACES = 10
 
 ps.init()
 
-# obj = load_obj('mesh/hourglass_ico.obj')
-# obj = load_obj( 'mesh/spot.obj')              # vache
-# obj = load_obj( 'mesh/tet.obj')               # pyramide
-# obj = load_obj( 'mesh/test_cube.obj')         # cube
-# obj = load_obj( 'mesh/feline_half.obj')       # feline
+obj = load_obj('Mesh/hourglass_ico.obj')
+# obj = load_obj( 'Mesh/spot.obj')              # vache
+# obj = load_obj( 'Mesh/tet.obj')               # pyramide
+# obj = load_obj( 'Mesh/test_cube.obj')         # cube
+# obj = load_obj( 'Mesh/feline_half.obj')       # feline
 
 
 
@@ -145,5 +145,5 @@ def get_all_neighbours(obj, vertex_index):
 ps_mesh = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_faces() )
 # ps.show()
 
-L = obj.ordered_boundary()
-print(L)
+# L = obj.ordered_boundary()
+# print(L)
