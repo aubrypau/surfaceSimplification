@@ -2,9 +2,20 @@ import polyscope as ps
 import numpy as np
 from wavefront import *
 import math
+import heapq
+import time
+
+THRESHOLD_T = 0
+MINIMUM_FACES = 10
 
 ps.init()
-obj = load_obj("test_cube.obj")
+
+obj = load_obj('mesh/hourglass_ico.obj')
+# obj = load_obj( 'mesh/spot.obj')              # vache
+# obj = load_obj( 'mesh/tet.obj')               # pyramide
+# obj = load_obj( 'mesh/test_cube.obj')         # cube
+# obj = load_obj( 'mesh/feline_half.obj')       # feline
+
 
 
 # `verts` is a Nx3 numpy array of vertex positions
@@ -19,7 +30,7 @@ obj = load_obj("test_cube.obj")
 ############ Etape 1 ############
 # Step 1: Compute the Q matrices for all the initial vertices.
 
-
+# je pense ca marche plus j'ai chengé is_edge
 def getAllEdges(v1):
     tab = []
     for v2 in obj.vertices:
@@ -73,25 +84,17 @@ valid_pairs = []  # list of valid pairs
 
 # if v1 and v2 are connected by an edge return true
 def is_edge(v1, v2):
-    # Check if vertices share the same x, y, or z coordinate value
-    if v1[0] == v2[0] and v1[1] == v2[1]:
-        # Check if distance between vertices is equal to edge length
-        if math.isclose(abs(v1[2] - v2[2]), 2):
-            return True
-    elif v1[1] == v2[1] and v1[2] == v2[2]:
-        if math.isclose(abs(v1[0] - v2[0]), 2):
-            return True
-    elif v1[0] == v2[0] and v1[2] == v2[2]:
-        if math.isclose(abs(v1[1] - v2[1]), 2):
+    for f in obj.only_faces():
+        if v1 in f and v2 in f:
             return True
     return False
 
 
-def all_valid_pairs(obj, t):
+def all_valid_pairs(obj):
     # compare each pair of vertices and chek if they are valid
     for v1 in obj.vertices:
         for v2 in obj.vertices:
-            if v1 != v2 and is_edge(v1, v2) or np.linalg.norm(np.subtract(v1, v2)) < t:
+            if v1 != v2 and is_edge(v1, v2) or np.linalg.norm(np.subtract(v1, v2)) < THRESHOLD_T:
                 valid_pairs.append((v1, v2))
 
 
@@ -108,12 +111,49 @@ def remove_vertex(obj, vertex_index):
     # Remove the vertex from the vertex list
     obj.vertices = np.delete(obj.vertices, vertex_index, 0)
 
+def get_all_neighbours(obj, vertex_index):
+    neighbours = []
+    for v in range (0, len(obj.vertices)):
+        if is_edge(vertex_index, v) and vertex_index != v:
+            neighbours.append(v)
+    return neighbours
 
-# supprime une face
-# remove_vertex(obj, 0)
+def remove_faces(obj, face_index):
+    # Remove the face from the face list
+    # print(obj.only_faces())
+    for f in obj.only_faces():
+        if face_index in f:
+            print("removed face")
+            print(f)
+            print("face index")
+            print(obj.polygons)
+            if obj.polygons[face_index] 
 
-ps_mesh = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_faces())
-# ps.show()
+# print("neighbours")
+# print(get_all_neighbours(obj, 10))
+
+
+remove_vertex(obj, 7)
+# remove_vertex(obj, 8)
+
+remove_faces(obj, 7)
+
+
+# print(obj.only_faces())
+
+
+# v
+# print(obj.vertices)
+
+# vn
+# print(obj.normals)
+
+# vt
+# print(obj.texcoords)
+
+    
+ps_mesh = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_faces() )
+ps.show()
 
 L = obj.ordered_boundary()
 print(L)
