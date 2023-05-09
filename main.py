@@ -99,12 +99,27 @@ norme = normeVect(PQPR)
 # print(norme)
 
 n = prodVectNormed(PQPR, norme)
-print(n)
 
 d = scalarProduct(n, P)
 # la matrice a b c d
 n.append(d/norme) 
 print(n)
+
+def matrixABCDfromPoints(P, Q, R):
+    PR = vect(P, R)
+    PQ = vect(P, Q)
+
+    PQPR = prodVect(PQ, PR)
+    norme = normeVect(PQPR)
+
+    n = prodVectNormed(PQPR, norme)
+
+    d = scalarProduct(n, P) / norme
+    n.append(d)
+    return n
+
+abcd = matrixABCDfromPoints(P, Q, R)
+print(abcd)
 
 ############ Etape 2 ############
 
