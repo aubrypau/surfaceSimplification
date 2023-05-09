@@ -10,7 +10,7 @@ MINIMUM_FACES = 10
 
 ps.init()
 
-obj = load_obj('mesh/hourglass_ico.obj')
+# obj = load_obj('mesh/hourglass_ico.obj')
 # obj = load_obj( 'mesh/spot.obj')              # vache
 # obj = load_obj( 'mesh/tet.obj')               # pyramide
 # obj = load_obj( 'mesh/test_cube.obj')         # cube
@@ -118,25 +118,15 @@ def get_all_neighbours(obj, vertex_index):
             neighbours.append(v)
     return neighbours
 
-def remove_faces(obj, face_index):
-    # Remove the face from the face list
-    # print(obj.only_faces())
-    for f in obj.only_faces():
-        if face_index in f:
-            print("removed face")
-            print(f)
-            print("face index")
-            print(obj.polygons)
-            if obj.polygons[face_index] 
 
 # print("neighbours")
 # print(get_all_neighbours(obj, 10))
 
 
-remove_vertex(obj, 7)
+# remove_vertex(obj, 7)
 # remove_vertex(obj, 8)
 
-remove_faces(obj, 7)
+# remove_faces(obj, 7)
 
 
 # print(obj.only_faces())
@@ -153,7 +143,7 @@ remove_faces(obj, 7)
 
     
 ps_mesh = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_faces() )
-ps.show()
+# ps.show()
 
 L = obj.ordered_boundary()
 print(L)
