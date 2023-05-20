@@ -10,12 +10,11 @@ MINIMUM_FACES = 10
 
 ps.init()
 
-obj = load_obj('Mesh/hourglass_ico.obj')
+obj = load_obj("Mesh/hourglass_ico.obj")
 # obj = load_obj( 'Mesh/spot.obj')              # vache
 # obj = load_obj( 'Mesh/tet.obj')               # pyramide
 # obj = load_obj( 'Mesh/test_cube.obj')         # cube
 # obj = load_obj( 'Mesh/feline_half.obj')       # feline
-
 
 
 # `verts` is a Nx3 numpy array of vertex positions
@@ -30,7 +29,8 @@ obj = load_obj('Mesh/hourglass_ico.obj')
 ############ Etape 1 ############
 # Step 1: Compute the Q matrices for all the initial vertices.
 
-# je pense ca marche plus j'ai chengé is_edge
+
+# je pense ca marche plus j'ai changé is_edge
 def getAllEdges(v1):
     tab = []
     for v2 in obj.vertices:
@@ -40,9 +40,19 @@ def getAllEdges(v1):
     return tab
 
 
+# En donnant le numéro du sommet, on récupère toutes les faces qui le contiennent
 def getAllFaces(v1):
+    allFaces = obj.only_faces()
     tab = []
-    tabv2 = getAllEdges(v1)
+    print("v1 : ", v1)
+    for f in allFaces:
+        if v1 in f:
+            tab.append(f)
+    return tab
+
+
+# Ici on récupère les faces qui contiennent le sommet numéro 22
+print("getAllFaces : ", getAllFaces(22))
 
 
 ############ Calculer a b c d pour un plan ############
@@ -50,12 +60,15 @@ def getAllFaces(v1):
 """
 Soit un tirangle PRQ, avec P le sommet, calcul les vecteurs PR et PQ
 """
+
+
 # avec P le point P et p le point R ou Q
 def vect(P, p):
     res = []
     for i in range(0, 3):
         res.append(p[i] - P[i])
     return res
+
 
 # calcul le produit de deux vecteur
 def prodVect(u, v):
@@ -65,9 +78,11 @@ def prodVect(u, v):
     res[2] = u[0] * v[1] - u[1] * v[0]
     return res
 
+
 # permet de calculer la norme d'un vecteur (distance)
 def normeVect(v):
-    return math.sqrt(v[0]**2 + v[1]**2 + v[2]**2)
+    return math.sqrt(v[0] ** 2 + v[1] ** 2 + v[2] ** 2)
+
 
 # calcul un produit vectorielle divisé par sa norme
 def prodVectNormed(u, a):
@@ -76,12 +91,14 @@ def prodVectNormed(u, a):
         res.append(u[i] / a)
     return res
 
+
 # calcul du prolduit entre le vecteur n et P (l'origine du triangle)
 def scalarProduct(n, P):
     nb = 0
     for i in range(3):
         nb += n[i] * P[i]
     return nb
+
 
 # test pour la matrice [ a b c d ]
 P = [1, 4, 8]
@@ -102,8 +119,9 @@ n = prodVectNormed(PQPR, norme)
 
 d = scalarProduct(n, P)
 # la matrice a b c d
-n.append(d/norme) 
+n.append(d / norme)
 print(n)
+
 
 def matrixABCDfromPoints(P, Q, R):
     PR = vect(P, R)
@@ -117,6 +135,7 @@ def matrixABCDfromPoints(P, Q, R):
     d = scalarProduct(n, P) / norme
     n.append(d)
     return n
+
 
 abcd = matrixABCDfromPoints(P, Q, R)
 print(abcd)
@@ -139,7 +158,11 @@ def all_valid_pairs(obj):
     # compare each pair of vertices and chek if they are valid
     for v1 in obj.vertices:
         for v2 in obj.vertices:
-            if v1 != v2 and is_edge(v1, v2) or np.linalg.norm(np.subtract(v1, v2)) < THRESHOLD_T:
+            if (
+                v1 != v2
+                and is_edge(v1, v2)
+                or np.linalg.norm(np.subtract(v1, v2)) < THRESHOLD_T
+            ):
                 valid_pairs.append((v1, v2))
 
 
@@ -156,9 +179,10 @@ def remove_vertex(obj, vertex_index):
     # Remove the vertex from the vertex list
     obj.vertices = np.delete(obj.vertices, vertex_index, 0)
 
+
 def get_all_neighbours(obj, vertex_index):
     neighbours = []
-    for v in range (0, len(obj.vertices)):
+    for v in range(0, len(obj.vertices)):
         if is_edge(vertex_index, v) and vertex_index != v:
             neighbours.append(v)
     return neighbours
@@ -186,8 +210,8 @@ def get_all_neighbours(obj, vertex_index):
 # vt
 # print(obj.texcoords)
 
-    
-ps_mesh = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_faces() )
+
+ps_mesh = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_faces())
 # ps.show()
 
 # L = obj.ordered_boundary()
