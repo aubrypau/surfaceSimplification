@@ -44,16 +44,20 @@ def getAllEdges(v1):
 def getAllFaces(v1):
     allFaces = obj.only_faces()
     tab = []
-    print("v1 : ", v1)
     for f in allFaces:
         if v1 in f:
             tab.append(f)
     return tab
 
 
-# Ici on récupère les faces qui contiennent le sommet numéro 22
-print("getAllFaces : ", getAllFaces(22))
+# Ici on récupère les faces qui contiennent le sommet numéro 12
+# tab = getAllFaces(12)
+# print("tab : ", tab)
 
+# On récupère ensuite les coordonnées des sommets obtenus
+# print("obj.vertices tab[0][0]: ", obj.only_coordinates()[tab[0][0]])
+# print("obj.vertices tab[0][1]: ", obj.only_coordinates()[tab[0][1]])
+# print("obj.vertices tab[0][2]: ", obj.only_coordinates()[tab[0][2]])
 
 ############ Calculer a b c d pour un plan ############
 
@@ -216,3 +220,21 @@ ps_mesh = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_face
 
 # L = obj.ordered_boundary()
 # print(L)
+
+
+# Test récupérer les faces d'un sommet puis calculer la matrice
+tab = getAllFaces(12)
+print("tab : ", tab)
+
+# On récupère ensuite les coordonnées des sommets obtenus
+P = obj.only_coordinates()[tab[0][0]]
+R = obj.only_coordinates()[tab[0][1]]
+Q = obj.only_coordinates()[tab[0][2]]
+
+PR = vect(P, R)
+PQ = vect(P, Q)
+PQPR = prodVect(PQ, PR)
+
+abcd = matrixABCDfromPoints(P, Q, R)
+print("Matrice pour le plan :", P, Q, R)
+print(abcd)
