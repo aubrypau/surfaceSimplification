@@ -222,19 +222,25 @@ ps_mesh = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_face
 # print(L)
 
 
-# Test récupérer les faces d'un sommet puis calculer la matrice
+# Test récupérer les faces d'un sommet puis calculer la matrice pour chaque face
 tab = getAllFaces(12)
+tab2 = []
 print("tab : ", tab)
 
 # On récupère ensuite les coordonnées des sommets obtenus
-P = obj.only_coordinates()[tab[0][0]]
-R = obj.only_coordinates()[tab[0][1]]
-Q = obj.only_coordinates()[tab[0][2]]
+for i in range(len(tab)):
+    P = obj.only_coordinates()[tab[i][0]]
+    R = obj.only_coordinates()[tab[i][1]]
+    Q = obj.only_coordinates()[tab[i][2]]
+    tab2.append(matrixABCDfromPoints(P, Q, R))
 
-PR = vect(P, R)
-PQ = vect(P, Q)
-PQPR = prodVect(PQ, PR)
+print("Matrices des plans du sommet : ", tab2)
 
-abcd = matrixABCDfromPoints(P, Q, R)
-print("Matrice pour le plan :", P, Q, R)
-print(abcd)
+# On créer ensuite la matrice d'erreurs
+matrice_initiale = np.array(tab2[0])
+matrice_inverse = np.reshape(matrice_initiale, (4, 1))
+resultat = np.dot(matrice_initiale, matrice_inverse)
+
+print("Matrice initiale : ", matrice_initiale)
+print("Matrice inverse : ", matrice_inverse)
+print("Résultat : ", resultat)
