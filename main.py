@@ -256,7 +256,11 @@ def Q(vNumber):
     # v = np.matrix(v).T
     # vT = v.T
     return  Q 
-    
+
+def quadraticError(v, Q):
+
+    return v.T * Q * v
+
 
 # calculateQofVertex(4)
 # print(Q(22))
@@ -270,7 +274,7 @@ def calculateAllQ():
     vertex = obj.only_coordinates()
     for i in range(len(vertex)):
         res.append(Q(i))
-    print(len(res))
+
     return res
 
 print(calculateAllQ())
