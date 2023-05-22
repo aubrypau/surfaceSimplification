@@ -246,30 +246,31 @@ def getAllKfromVertex(vNumber):
 
 def Q(vNumber):
     Kp = getAllKfromVertex(vNumber)
-    coor = obj.only_coordinates()[vNumber]
+    # coor = obj.only_coordinates()[vNumber]
     Q = Kp[0]
     #Calcul la somme des erreurs
     for i in range(1, len(Kp)):
         Q += Kp[i]
 
-    v = [ coor[0], coor[1], coor[2], 1]
-    v = np.matrix(v).T
-    vT = v.T
-    return vT * Q * v
+    # v = [ coor[0], coor[1], coor[2], 1]
+    # v = np.matrix(v).T
+    # vT = v.T
+    return  Q 
     
 
 # calculateQofVertex(4)
-print(Q(22))
-print(Q(3))
+# print(Q(22))
+# print(Q(3))
 
 # print(getAllQfromVertex(12))
 # permet de calculer toutes les matrices Q pour touts les sommets 
 
-# def calculateAllQ():
-#     res = []
-#     faces = obj.only_faces()
-#     for i in range(len(faces)):
-#         res.append(getAllQfromVertex(i))
-#     return res
+def calculateAllQ():
+    res = []
+    vertex = obj.only_coordinates()
+    for i in range(len(vertex)):
+        res.append(Q(i))
+    print(len(res))
+    return res
 
-
+print(calculateAllQ())
