@@ -249,7 +249,14 @@ def getAllQfromVertex(vNumber):
 
     return Qs
 
-print(getAllQfromVertex(12))
+# print(getAllQfromVertex(12))
+# permet de calculer toutes les matrices Q pour touts les sommets 
 
+# def calculateAllQ():
+#     res = []
+#     faces = obj.only_faces()
+#     for i in range(len(faces)):
+#         res.append(getAllQfromVertex(i))
+#     return res
 
 
