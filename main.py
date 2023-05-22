@@ -249,6 +249,22 @@ def getAllQfromVertex(vNumber):
 
     return Qs
 
+def calculateQofVertex(vNumber):
+    Qs = getAllQfromVertex(vNumber)
+    coor = obj.only_coordinates()[vNumber]
+
+    #v = np.append(coor, 1)
+    v = np.array([0.7236, 0.552785, -0.52572, 1])[np.newaxis]
+    print(v)
+    v.T
+    print(v)
+    z = v.T.T
+    print(z)
+    
+
+
+calculateQofVertex(4)
+
 # print(getAllQfromVertex(12))
 # permet de calculer toutes les matrices Q pour touts les sommets 
 
