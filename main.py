@@ -224,9 +224,9 @@ def getAllABCDfromVertex(vNumber):
 
     # On récupère ensuite les coordonnées des sommets obtenus
     for i in range(len(f)):
-        P = obj.only_coordinates()[f[i][0]]
-        R = obj.only_coordinates()[f[i][1]]
-        Q = obj.only_coordinates()[f[i][2]]
+        P = obj.get_coord(f[i][0])
+        R = obj.get_coord(f[i][1])
+        Q = obj.get_coord(f[i][2])
         abcd.append(matrixABCDfromPoints(P, Q, R))
     
     return abcd
@@ -267,8 +267,8 @@ def moyPointContraction(v1, v2):
 
 def contractionV(v1, v2):
     global Qs
-    coorV1 = obj.only_coordinates()[v1]
-    coorV2 = obj.only_coordinates()[v2]
+    coorV1 = obj.get_coord(v1)
+    coorV2 = obj.get_coord(v2)
     Q1 = Qs[v1]
     Q2 = Qs[v2]
     
