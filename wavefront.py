@@ -29,6 +29,9 @@ class WavefrontOBJ:
             all_faces.append( face )
         return all_faces
     
+    def get_coord( self, index ):
+        return self.vertices[index]
+    
     ### return boundary vertices
     def boundary_vertices( self ):
         bdry_v= set()
@@ -93,6 +96,21 @@ class WavefrontOBJ:
             list_e.append( cur )
             cur = d[ cur ]
         return list_e
+    
+    def getAllEdges( self ):
+        darts = {}
+        faces = self.only_faces()
+        for f in faces:
+            for i in range( len(f) ):
+                if ( f[i] in darts ):
+                    darts[ f[ i ] ].append( f[ (i+1)%len(f) ] )
+                else:
+                    darts[ f[ i ] ] = [ f[ (i+1)%len(f) ] ]
+        return darts
+    
+    def getAllEdgesOfVertex( self, v ):
+        allEdges = self.getAllEdges()
+        return allEdges[ v ]
     
 def load_obj( filename: str, default_mtl='default_mtl', triangulate=False ) -> WavefrontOBJ:
     """Reads a .obj file from disk and returns a WavefrontOBJ instance
