@@ -238,9 +238,10 @@ print("Matrices des plans du sommet : ", tab2)
 
 # On créer ensuite la matrice d'erreurs
 matrice_initiale = np.array(tab2[0])
-matrice_inverse = np.reshape(matrice_initiale, (4, 1))
-resultat = np.dot(matrice_initiale, matrice_inverse)
+matrice_ligne = np.reshape(matrice_initiale, (1, 4))
+matrice_colonne = np.reshape(matrice_ligne, (4, 1))
+resultat = np.dot(matrice_colonne, matrice_ligne)
 
-print("Matrice initiale : ", matrice_initiale)
-print("Matrice inverse : ", matrice_inverse)
+print("Matrice initiale : ", matrice_ligne)
+print("Matrice inverse : ", matrice_colonne)
 print("Résultat : ", resultat)
