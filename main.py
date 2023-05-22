@@ -231,8 +231,8 @@ def getAllABCDfromVertex(vNumber):
     
     return abcd
 
-def getAllQfromVertex(vNumber):
-    Qs = []
+def getAllKfromVertex(vNumber):
+    Kp = []
     ABCDs = getAllABCDfromVertex(vNumber)
 
     for i in range(len(ABCDs)):
@@ -240,27 +240,27 @@ def getAllQfromVertex(vNumber):
         matrice_initiale = np.matrix(ABCDs[i])
         matrice_ligne = np.reshape(matrice_initiale, (1, 4))
         matrice_colonne = np.reshape(matrice_ligne, (4, 1))
-        Qs.append(matrice_colonne * matrice_ligne)
+        Kp.append(matrice_colonne * matrice_ligne)
 
-    return Qs
+    return Kp
 
-def calculateQofVertex(vNumber):
-    Qs = getAllQfromVertex(vNumber)
+def Q(vNumber):
+    Kp = getAllKfromVertex(vNumber)
     coor = obj.only_coordinates()[vNumber]
-    v = [ coor[0], coor[1], coor[2], 1]
-    sum = Qs[0]
+    Q = Kp[0]
     #Calcul la somme des erreurs
-    for i in range(1, len(Qs)):
-        sum += Qs[i]
+    for i in range(1, len(Kp)):
+        Q += Kp[i]
 
+    v = [ coor[0], coor[1], coor[2], 1]
     v = np.matrix(v).T
     vT = v.T
-    return vT * sum * v
+    return vT * Q * v
     
 
 # calculateQofVertex(4)
-print(calculateQofVertex(22))
-print(calculateQofVertex(3))
+print(Q(22))
+print(Q(3))
 
 # print(getAllQfromVertex(12))
 # permet de calculer toutes les matrices Q pour touts les sommets 
