@@ -146,33 +146,28 @@ abcd = matrixABCDfromPoints(P, Q, R)
 
 ############ Etape 2 ############
 
-t = 0  # threshold
-valid_pairs = []  # list of valid pairs
-
-
 # if v1 and v2 are connected by an edge return true
 def is_edge(v1, v2):
-    for f in obj.only_faces():
-        if v1 in f and v2 in f:
+    allEdgesV1 = obj.getAllEdgesOfVertex(v1)
+    for e in allEdgesV1:
+        if e == v2:
             return True
     return False
 
-
 def all_valid_pairs(obj):
     # compare each pair of vertices and chek if they are valid
-    for v1 in obj.vertices:
-        for v2 in obj.vertices:
-            if (
-                v1 != v2
-                and is_edge(v1, v2)
-                or np.linalg.norm(np.subtract(v1, v2)) < THRESHOLD_T
-            ):
-                valid_pairs.append((v1, v2))
+    valid_pairs = []
+    for v1 in range (0, len(obj.vertices)):
+        for v2 in range (0, len(obj.vertices)):
+            if ( (v1 != v2 and is_edge(v1, v2)) or (v1 != v2 and np.linalg.norm(np.subtract(obj.get_coord(v1), obj.get_coord(v2))) < THRESHOLD_T )):
+                if (v1, v2) not in valid_pairs and (v2, v1) not in valid_pairs:
+                    valid_pairs.append((v1, v2))
+    return valid_pairs
 
-
-# all_valid_pairs(obj, t)
+valid_pairs = all_valid_pairs(obj)
 # print("valid pairs")
 # print(valid_pairs)
+# print(len(valid_pairs))
 
 
 ####################################
@@ -183,7 +178,7 @@ def remove_vertex(obj, vertex_index):
     # Remove the vertex from the vertex list
     obj.vertices = np.delete(obj.vertices, vertex_index, 0)
 
-
+# VERIFIER SI CA MARCHE ( changement de la fonction is_edge )
 def get_all_neighbours(obj, vertex_index):
     neighbours = []
     for v in range(0, len(obj.vertices)):
