@@ -124,7 +124,7 @@ n = prodVectNormed(PQPR, norme)
 d = scalarProduct(n, P)
 # la matrice a b c d
 n.append(d / norme)
-print(n)
+# print(n)
 
 
 def matrixABCDfromPoints(P, Q, R):
@@ -142,7 +142,7 @@ def matrixABCDfromPoints(P, Q, R):
 
 
 abcd = matrixABCDfromPoints(P, Q, R)
-print(abcd)
+# print(abcd)
 
 ############ Etape 2 ############
 
@@ -222,26 +222,34 @@ ps_mesh = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_face
 # print(L)
 
 
-# Test récupérer les faces d'un sommet puis calculer la matrice pour chaque face
-tab = getAllFaces(12)
-tab2 = []
-print("tab : ", tab)
+# Récupère les faces d'un sommet puis calcule la matrice pour chaque face
+def getAllABCDfromVertex(vNumber):
+    f = getAllFaces(vNumber)
+    abcd = []
 
-# On récupère ensuite les coordonnées des sommets obtenus
-for i in range(len(tab)):
-    P = obj.only_coordinates()[tab[i][0]]
-    R = obj.only_coordinates()[tab[i][1]]
-    Q = obj.only_coordinates()[tab[i][2]]
-    tab2.append(matrixABCDfromPoints(P, Q, R))
+    # On récupère ensuite les coordonnées des sommets obtenus
+    for i in range(len(f)):
+        P = obj.only_coordinates()[f[i][0]]
+        R = obj.only_coordinates()[f[i][1]]
+        Q = obj.only_coordinates()[f[i][2]]
+        abcd.append(matrixABCDfromPoints(P, Q, R))
+    
+    return abcd
 
-print("Matrices des plans du sommet : ", tab2)
+def getAllQfromVertex(vNumber):
+    Qs = []
+    ABCDs = getAllABCDfromVertex(vNumber)
 
-# On créer ensuite la matrice d'erreurs
-matrice_initiale = np.array(tab2[0])
-matrice_ligne = np.reshape(matrice_initiale, (1, 4))
-matrice_colonne = np.reshape(matrice_ligne, (4, 1))
-resultat = np.dot(matrice_colonne, matrice_ligne)
+    for i in range(len(ABCDs)):
 
-print("Matrice initiale : ", matrice_ligne)
-print("Matrice inverse : ", matrice_colonne)
-print("Résultat : ", resultat)
+        matrice_initiale = np.array(ABCDs[i])
+        matrice_ligne = np.reshape(matrice_initiale, (1, 4))
+        matrice_colonne = np.reshape(matrice_ligne, (4, 1))
+        Qs.append(np.dot(matrice_colonne, matrice_ligne))
+
+    return Qs
+
+print(getAllQfromVertex(12))
+
+
+
