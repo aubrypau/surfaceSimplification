@@ -246,22 +246,61 @@ def getAllKfromVertex(vNumber):
 
 def Q(vNumber):
     Kp = getAllKfromVertex(vNumber)
-    # coor = obj.only_coordinates()[vNumber]
+    
     Q = Kp[0]
     #Calcul la somme des erreurs
     for i in range(1, len(Kp)):
         Q += Kp[i]
 
-    # v = [ coor[0], coor[1], coor[2], 1]
-    # v = np.matrix(v).T
-    # vT = v.T
     return  Q 
 
 def quadraticError(v, Q):
-
     return v.T * Q * v
 
+def moyPointContraction(v1, v2):
+    res = [0,0,0]
 
+    for i in range(3):
+        res[i] = (v1[i] + v2[i]) / 2
+    
+    return res
+
+def contractionV(v1, v2):
+    global Qs
+    coorV1 = obj.only_coordinates()[v1]
+    coorV2 = obj.only_coordinates()[v2]
+    Q1 = Qs[v1]
+    Q2 = Qs[v2]
+    
+    coorV3 = moyPointContraction(coorV1, coorV2)
+    Q3 = Q1 + Q2
+
+    V1 = [ coorV1[0], coorV1[1], coorV1[2], 1]
+    V1 = np.matrix(V1).T
+    
+    V2 = [ coorV2[0], coorV2[1], coorV2[2], 1]
+    V2 = np.matrix(V2).T
+
+    V3 = [ coorV3[0], coorV3[1], coorV3[2], 1]
+    V3 = np.matrix(V3).T
+
+    q1 = quadraticError(V1, Q1)
+    q2 = quadraticError(V2, Q2)
+    q3 = quadraticError(V3, Q3)
+
+    if(q1 < q2 and q1 < q3):
+        resErr = q1
+        resPos = coorV1
+    elif(q2 < q1 and q2 < q3):
+        resErr = q2
+        resPos = coorV2
+    else:
+        resErr = q3
+        resPos = coorV3
+    
+    return resErr, resPos
+
+    
 # calculateQofVertex(4)
 # print(Q(22))
 # print(Q(3))
@@ -277,4 +316,14 @@ def calculateAllQ():
 
     return res
 
-print(calculateAllQ())
+Qs = calculateAllQ()
+contractionV(4,1)
+
+def computeContraction(validPairs):
+    cost = []
+    for i in range(len(validPairs)):
+        cost.append(contractionV(validPairs[i][0], validPairs[i][1]))
+    return cost
+
+res = computeContraction(valid_pairs)
+# print(res[0][0].item())
