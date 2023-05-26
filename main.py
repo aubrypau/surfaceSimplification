@@ -8,7 +8,7 @@ import time
 THRESHOLD_T = 0
 MINIMUM_FACES = 10
 
-ps.init()
+# ps.init()
 
 obj = load_obj("Mesh/hourglass_ico.obj")
 # obj = load_obj( 'Mesh/spot.obj')              # vache
@@ -298,7 +298,7 @@ def contractionV(v1, v2):
         resErr = q3
         resPos = coorV3
     
-    return resErr, resPos
+    return resErr, resPos, (v1, v2)
 
     
 # calculateQofVertex(4)
@@ -326,4 +326,29 @@ def computeContraction(validPairs):
     return cost
 
 res = computeContraction(valid_pairs)
-# print(res[0][0].item())
+# print(res[0])
+
+def convertContractionToHeap(tab):
+    res = []
+    for i in range(len(tab)):
+        res.append([tab[i][0].item(), tab[i][2]])
+    return res
+
+heapTab = convertContractionToHeap(res)
+# print(heap)
+
+def heapsort(iterable):
+    h = []
+    for value in iterable:
+        heapq.heappush(h, value[0])
+    return [heapq.heappop(h) for i in range(len(h))]
+
+heapq.heapify(heapTab)
+heapsort(heapTab)
+
+
+def label(i):
+    while (i != L[i]):
+        i = L[i]
+    return i
+
