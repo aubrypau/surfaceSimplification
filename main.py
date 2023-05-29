@@ -8,10 +8,13 @@ import time
 THRESHOLD_T = 0
 MINIMUM_FACES = 10
 LABEL = []
+COORDONNEES = []
+FACES = []
 
-# ps.init()
+ps.init()
 
 obj = load_obj("Mesh/hourglass_ico.obj")
+# obj = load_obj("Mesh/bunnyhead.obj")          # octopus
 # obj = load_obj( 'Mesh/spot.obj')              # vache
 # obj = load_obj( 'Mesh/tet.obj')               # pyramide
 # obj = load_obj( 'Mesh/test_cube.obj')         # cube
@@ -31,11 +34,17 @@ def init_label():
     for i in range(len(obj.vertices)):
         LABEL.append(i)
 
-############ Etape 1 ############
-# Step 1: Compute the Q matrices for all the initial vertices.
+def init_coordonnees():
+    for i in range(len(obj.vertices)):
+        COORDONNEES.append(obj.only_coordinates()[i])
 
 
-# je pense ca marche plus j'ai changé is_edge
+def init_faces():
+    for i in range(len(obj.polygons)):
+        FACES.append(obj.only_faces()[i])
+    
+
+
 def getAllEdges(v1):
     tab = []
     for v2 in obj.vertices:
@@ -43,7 +52,6 @@ def getAllEdges(v1):
             if is_edge(v1, v2):
                 tab.append((v2))
     return tab
-
 
 # En donnant le numéro du sommet, on récupère toutes les faces qui le contiennent
 def getAllFaces(v1):
@@ -147,13 +155,13 @@ def matrixABCDfromPoints(P, Q, R):
 
 
 abcd = matrixABCDfromPoints(P, Q, R)
-# print(abcd)
 
 ############ Etape 2 ############
 
 # if v1 and v2 are connected by an edge return true
 def is_edge(v1, v2):
     allEdgesV1 = obj.getAllEdgesOfVertex(v1)
+    print("allEdgesV1 : ", allEdgesV1)
     for e in allEdgesV1:
         if e == v2:
             return True
@@ -164,15 +172,34 @@ def all_valid_pairs(obj):
     valid_pairs = []
     for v1 in range (0, len(obj.vertices)):
         for v2 in range (0, len(obj.vertices)):
+            print("v1 : ", v1, " v2 : ", v2)
             if ( (v1 != v2 and is_edge(v1, v2)) or (v1 != v2 and np.linalg.norm(np.subtract(obj.get_coord(v1), obj.get_coord(v2))) < THRESHOLD_T )):
                 if (v1, v2) not in valid_pairs and (v2, v1) not in valid_pairs:
                     valid_pairs.append((v1, v2))
+    print("valid_pairs : ", valid_pairs)
     return valid_pairs
 
-valid_pairs = all_valid_pairs(obj)
-# print("valid pairs")
-# print(valid_pairs)
-# print(len(valid_pairs))
+# def all_valid_pairs(obj):
+#     obj_file_path = "Mesh/hourglass_ico.obj"
+#     edges = []
+#     with open(obj_file_path, 'r') as file:
+#         for line in file:
+#             if line.startswith('f '): 
+#                 face_vertices = line.strip().split()[1:] 
+#                 num_vertices = len(face_vertices)
+#                 for i in range(num_vertices):
+#                     v1 = face_vertices[i]
+#                     v2 = face_vertices[(i + 1) % num_vertices]
+#                     print("v1 : ", v1, " v2 : ", v2)
+#                     edge = (int(v1)-1, int(v2)-1)
+#                     edge_inversed = (int(v2)-1, int(v1)-1)
+#                     if edge not in edges and edge_inversed not in edges:
+#                         edges.append(edge)
+#     print("edges : ", edges)
+#     print("len(edges) : ", len(edges))
+#     return edges
+
+
 
 
 ####################################
@@ -190,36 +217,6 @@ def get_all_neighbours(obj, vertex_index):
         if is_edge(vertex_index, v) and vertex_index != v:
             neighbours.append(v)
     return neighbours
-
-
-# print("neighbours")
-# print(get_all_neighbours(obj, 10))
-
-
-# remove_vertex(obj, 7)
-# remove_vertex(obj, 8)
-
-# remove_faces(obj, 7)
-
-
-# print(obj.only_faces())
-
-
-# v
-# print(obj.vertices)
-
-# vn
-# print(obj.normals)
-
-# vt
-# print(obj.texcoords)
-
-
-# ps_mesh = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_faces())
-# ps.show()
-
-# L = obj.ordered_boundary()
-# print(L)
 
 
 # Récupère les faces d'un sommet puis calcule la matrice pour chaque face
@@ -306,6 +303,7 @@ def contractionV(v1, v2):
     return resErr, resPos, (v1, v2)
 
     
+    
 # calculateQofVertex(4)
 # print(Q(22))
 # print(Q(3))
@@ -322,7 +320,7 @@ def calculateAllQ():
     return res
 
 Qs = calculateAllQ()
-contractionV(4,1)
+
 
 def computeContraction(validPairs):
     cost = []
@@ -330,8 +328,7 @@ def computeContraction(validPairs):
         cost.append(contractionV(validPairs[i][0], validPairs[i][1]))
     return cost
 
-res = computeContraction(valid_pairs)
-# print(res[0])
+
 
 def convertContractionToHeap(tab):
     res = []
@@ -339,8 +336,6 @@ def convertContractionToHeap(tab):
         res.append([tab[i][0].item(), tab[i][2]])
     return res
 
-heapTab = convertContractionToHeap(res)
-# print(heap)
 
 def heapsort(iterable):
     h = []
@@ -348,12 +343,9 @@ def heapsort(iterable):
         heapq.heappush(h, value[0])
     return [heapq.heappop(h) for i in range(len(h))]
 
-heapq.heapify(heapTab)
-heapsort(heapTab)
+
 
 # Gestion des labels
-
-init_label()
 
 def label(i):
     while (i != LABEL[i]):
@@ -369,3 +361,70 @@ def find(i, j):
     else:
         return False
     
+def getCoord(i):
+    return COORDONNEES[label(i)]
+
+def editCoord(i, coord):
+    COORDONNEES[i] = coord
+
+# Programme principal
+
+def main(simplification):
+    if simplification:
+        # initialisation
+        print("Initialisation")
+        init_label()
+        print(len(LABEL))
+        init_coordonnees()
+        init_faces()
+
+
+        # Compute the Q matrices for all the initial vertices
+        print("Compute the Q matrices for all the initial vertices")
+        print(Qs[0])
+
+        # Compute the valid pairs
+        print("Compute the valid pairs")
+        valid_pairs = all_valid_pairs(obj)
+
+        # Compute the cost of each contraction
+        print("Compute the cost of each contraction")
+        res = computeContraction(valid_pairs)
+
+        # Place all the pairs in a heap keyed on cost with the minimum cost pair at the top
+        print("Place in the heap")
+        heapTab = convertContractionToHeap(res)
+        heapq.heapify(heapTab)
+        heapsort(heapTab)
+        
+
+        # Iteratively remove the pair (v1 , v2 ) of least cost from the heap, contract this pair, and update the costs of all valid pairs involving v1.
+        # while the lowest cost contraction is greater than 5
+        print("removing pairs")
+        while(heapTab[0][0] < 3):
+            pair = heapq.heappop(heapTab)
+            union(pair[1][0], pair[1][1])
+
+        # show the result of the contraction using the corresponding labels
+        # print(LABEL)
+
+        print("show the result of the contraction using the corresponding labels")
+        ps_Coord = []
+        for i in range(len(COORDONNEES)):
+            ps_Coord.append(COORDONNEES[label(i)])
+        ps_Coord = np.array(ps_Coord)
+
+        ps_Faces = FACES
+
+        ps_register = ps.register_surface_mesh("spot", ps_Coord, ps_Faces)
+        ps.show()
+
+        
+    else:
+        ps_register = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_faces())
+        ps.show()
+
+   
+# main(False)
+main(True)
+
