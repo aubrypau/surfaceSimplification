@@ -7,6 +7,7 @@ import time
 
 THRESHOLD_T = 0
 MINIMUM_FACES = 10
+LABEL = []
 
 # ps.init()
 
@@ -25,6 +26,10 @@ obj = load_obj("Mesh/hourglass_ico.obj")
 # bdry  = obj.numpy_boundary_edges()
 # ps_net= ps.register_curve_network("boundary", obj.only_coordinates(), bdry )
 
+
+def init_label():
+    for i in range(len(obj.vertices)):
+        LABEL.append(i)
 
 ############ Etape 1 ############
 # Step 1: Compute the Q matrices for all the initial vertices.
@@ -210,7 +215,7 @@ def get_all_neighbours(obj, vertex_index):
 # print(obj.texcoords)
 
 
-ps_mesh = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_faces())
+# ps_mesh = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_faces())
 # ps.show()
 
 # L = obj.ordered_boundary()
@@ -346,9 +351,21 @@ def heapsort(iterable):
 heapq.heapify(heapTab)
 heapsort(heapTab)
 
+# Gestion des labels
+
+init_label()
 
 def label(i):
-    while (i != L[i]):
-        i = L[i]
+    while (i != LABEL[i]):
+        i = LABEL[i]
     return i
 
+def union(i, j):
+    LABEL[label(i)] = label(j)
+
+def find(i, j):
+    if (label(i) == label(j)):
+        return True
+    else:
+        return False
+    
