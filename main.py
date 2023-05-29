@@ -161,7 +161,6 @@ abcd = matrixABCDfromPoints(P, Q, R)
 # if v1 and v2 are connected by an edge return true
 def is_edge(v1, v2):
     allEdgesV1 = obj.getAllEdgesOfVertex(v1)
-    print("allEdgesV1 : ", allEdgesV1)
     for e in allEdgesV1:
         if e == v2:
             return True
@@ -172,7 +171,6 @@ def all_valid_pairs(obj):
     valid_pairs = []
     for v1 in range (0, len(obj.vertices)):
         for v2 in range (0, len(obj.vertices)):
-            print("v1 : ", v1, " v2 : ", v2)
             if ( (v1 != v2 and is_edge(v1, v2)) or (v1 != v2 and np.linalg.norm(np.subtract(obj.get_coord(v1), obj.get_coord(v2))) < THRESHOLD_T )):
                 if (v1, v2) not in valid_pairs and (v2, v1) not in valid_pairs:
                     valid_pairs.append((v1, v2))
@@ -419,7 +417,7 @@ def main(simplification):
         ps_register = ps.register_surface_mesh("spot", ps_Coord, ps_Faces)
         ps.show()
 
-        
+
     else:
         ps_register = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_faces())
         ps.show()
