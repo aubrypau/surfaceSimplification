@@ -265,7 +265,7 @@ def moyPointContraction(v1, v2):
     
     return res
 
-def contractionV(v1, v2):
+def errorContractionV(v1, v2):
     global Qs
     coorV1 = obj.get_coord(v1)
     coorV2 = obj.get_coord(v2)
@@ -298,9 +298,43 @@ def contractionV(v1, v2):
         resErr = q3
         resPos = coorV3
     
-    return resErr, resPos, (v1, v2)
+    return resErr
 
+
+def posContractionV(v1, v2):
+    global Qs
+    coorV1 = obj.get_coord(v1)
+    coorV2 = obj.get_coord(v2)
+    Q1 = Qs[v1]
+    Q2 = Qs[v2]
     
+    coorV3 = moyPointContraction(coorV1, coorV2)
+    Q3 = Q1 + Q2
+
+    V1 = [ coorV1[0], coorV1[1], coorV1[2], 1]
+    V1 = np.matrix(V1).T
+    
+    V2 = [ coorV2[0], coorV2[1], coorV2[2], 1]
+    V2 = np.matrix(V2).T
+
+    V3 = [ coorV3[0], coorV3[1], coorV3[2], 1]
+    V3 = np.matrix(V3).T
+
+    q1 = quadraticError(V1, Q1)
+    q2 = quadraticError(V2, Q2)
+    q3 = quadraticError(V3, Q3)
+
+    if(q1 < q2 and q1 < q3):
+        resErr = q1
+        resPos = coorV1
+    elif(q2 < q1 and q2 < q3):
+        resErr = q2
+        resPos = coorV2
+    else:
+        resErr = q3
+        resPos = coorV3
+    
+    return resPos
     
 # calculateQofVertex(4)
 # print(Q(22))
@@ -323,7 +357,7 @@ Qs = calculateAllQ()
 def computeContraction(validPairs):
     cost = []
     for i in range(len(validPairs)):
-        cost.append(contractionV(validPairs[i][0], validPairs[i][1]))
+        cost.append(errorContractionV(validPairs[i][0], validPairs[i][1]))
     return cost
 
 
