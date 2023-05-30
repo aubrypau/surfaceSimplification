@@ -439,10 +439,14 @@ def main(simplification):
         nb_sim = 0
         while nb_sim < taux_simplification:
             pair = heapq.heappop(heapTab)
-            union(pair[1][1], pair[1][0])
-            # print("---------------")
-            # print(posContractionV(pair[1][0], pair[1][1]))
-            # print("---------------")
+            union(pair[1][0], pair[1][1])
+            print("---------------")
+            print(pair[1][0])
+            print(COORDONNEES[pair[1][0]])
+            print(pair[1][1])
+            print(COORDONNEES[pair[1][1]])
+            print(posContractionV(pair[1][0], pair[1][1]))
+            print("---------------")
             editCoord(LABEL[pair[1][1]], posContractionV(pair[1][0], pair[1][1]))
             nb_sim += 1
 
