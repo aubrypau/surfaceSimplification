@@ -400,6 +400,16 @@ def editCoord(i, coord):
     COORDONNEES[i] = coord
 
 
+def getPairsWithV1(heap, v1):
+    res = []
+    for i in range(len(heap)):
+        if (heap[i][1][0] == v1 or heap[i][1][1] == v1 ):
+            res.append(i)
+    return res
+
+def updatePairsWithV1(heap, list):
+    for i in range(len(list)):
+        heap[list[i]][0] = errorContractionV(heap[list[i]][1][0], heap[list[i]][1][1])[0]
 ####### Programme principal ########
 
 
@@ -444,6 +454,9 @@ def main(simplification):
             # print(posContractionV(pair[1][0], pair[1][1]))
             # print("---------------")
             editCoord(LABEL[pair[1][1]], posContractionV(pair[1][0], pair[1][1]))
+            to_update = getPairsWithV1(heapTab, pair[1][1])
+            updatePairsWithV1(heapTab, to_update)
+            heapsort(heapTab)
             nb_sim += 1
 
         print("show the result of the contraction using the corresponding labels")
@@ -467,6 +480,6 @@ def main(simplification):
 
 if __name__ == "__main__":
     taux = input(
-        "entrer le taux de compression souhaité ( 0 afficher la figure de base ) : \n"
+        "Entrez le taux de compression souhaité ( 0 afficher la figure de base ) : \n"
     )
     main(int(taux))
