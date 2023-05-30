@@ -118,25 +118,25 @@ def scalarProduct(n, P):
 
 
 # test pour la matrice [ a b c d ]
-P = [1, 4, 8]
-R = [2, 5, 4]
-Q = [6, 2, 3]
+# P = [1, 4, 8]
+# R = [2, 5, 4]
+# Q = [6, 2, 3]
 
-PR = vect(P, R)
-# print(PR)
-PQ = vect(P, Q)
-# print(PQ)
-PQPR = prodVect(PQ, PR)
-# print(PQPR)
+# PR = vect(P, R)
+# # print(PR)
+# PQ = vect(P, Q)
+# # print(PQ)
+# PQPR = prodVect(PQ, PR)
+# # print(PQPR)
 
-norme = normeVect(PQPR)
-# print(norme)
+# norme = normeVect(PQPR)
+# # print(norme)
 
-n = prodVectNormed(PQPR, norme)
+# n = prodVectNormed(PQPR, norme)
 
-d = scalarProduct(n, P)
-# la matrice a b c d
-n.append(d / norme)
+# d = scalarProduct(n, P)
+# # la matrice a b c d
+# n.append(d / norme)
 # print(n)
 
 
@@ -154,7 +154,7 @@ def matrixABCDfromPoints(P, Q, R):
     return n
 
 
-abcd = matrixABCDfromPoints(P, Q, R)
+# abcd = matrixABCDfromPoints(P, Q, R)
 
 ############ Etape 2 ############
 
@@ -290,13 +290,10 @@ def errorContractionV(v1, v2):
 
     if(q1 < q2 and q1 < q3):
         resErr = q1
-        resPos = coorV1
     elif(q2 < q1 and q2 < q3):
         resErr = q2
-        resPos = coorV2
     else:
         resErr = q3
-        resPos = coorV3
     
     return resErr, (v1, v2)
 
@@ -325,13 +322,10 @@ def posContractionV(v1, v2):
     q3 = quadraticError(V3, Q3)
 
     if(q1 < q2 and q1 < q3):
-        resErr = q1
         resPos = coorV1
     elif(q2 < q1 and q2 < q3):
-        resErr = q2
         resPos = coorV2
     else:
-        resErr = q3
         resPos = coorV3
     
     return resPos
@@ -351,7 +345,7 @@ def calculateAllQ():
 
     return res
 
-Qs = calculateAllQ()
+# Qs = calculateAllQ()
 
 
 def computeContraction(validPairs):
