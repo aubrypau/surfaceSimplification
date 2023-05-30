@@ -15,8 +15,8 @@ NB_SOMMETS = 0
 
 ps.init()
 
-# obj = load_obj("Mesh/hourglass_ico.obj")
-obj = load_obj("Mesh/octopus.obj")  # octopus
+# obj = load_obj("Mesh/hourglass_ico.obj")      # hourglass
+obj = load_obj("Mesh/octopus.obj")            # octopus
 # obj = load_obj( 'Mesh/tet.obj')               # pyramide
 
 
