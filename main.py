@@ -11,11 +11,13 @@ LABEL = []
 COORDONNEES = []
 FACES = []
 VOISINS = []
+NB_SOMMETS = 0
 
 ps.init()
 
-obj = load_obj("Mesh/hourglass_ico.obj")
-# obj = load_obj("Mesh/bunnyhead.obj")  # octopus
+# obj = load_obj("Mesh/hourglass_ico.obj")
+# obj = load_obj("Mesh/bunnyhead.obj")          # lapin
+obj = load_obj("Mesh/octopus.obj")  # octopus
 # obj = load_obj( 'Mesh/spot.obj')              # vache
 # obj = load_obj( 'Mesh/tet.obj')               # pyramide
 # obj = load_obj( 'Mesh/test_cube.obj')         # cube
@@ -412,10 +414,11 @@ def editCoord(i, coord):
 
 
 def main(simplification):
-    if simplification:
+    if simplification != 0:
         # initialisation
         print("Initialisation")
         init_label()
+        NB_SOMMETS = len(LABEL)
         print(len(LABEL))
         init_coordonnees()
         init_faces()
@@ -441,19 +444,17 @@ def main(simplification):
         print(heapTab)
 
         # Iteratively remove the pair (v1 , v2 ) of least cost from the heap, contract this pair, and update the costs of all valid pairs involving v1.
-        # while the lowest cost contraction is greater than 5
         print("removing pairs")
-        while len(heapTab) > 40:
+        taux_simplification = (NB_SOMMETS / 100) * simplification
+        nb_sim = 0
+        while nb_sim < taux_simplification:
             pair = heapq.heappop(heapTab)
             union(pair[1][0], pair[1][1])
-            print("union")
-            print(pair[1][0])
-            print(pair[1][1])
-            print(posContractionV(pair[1][0], pair[1][1]))
+            # print("---------------")
+            # print(posContractionV(pair[1][0], pair[1][1]))
+            # print("---------------")
             editCoord(LABEL[pair[1][1]], posContractionV(pair[1][0], pair[1][1]))
-
-        # show the result of the contraction using the corresponding labels
-        # print(LABEL)
+            nb_sim += 1
 
         print("show the result of the contraction using the corresponding labels")
         ps_Coord = []
@@ -467,21 +468,15 @@ def main(simplification):
         ps.show()
 
     else:
-        # initialisation
-        print("Initialisation")
-        init_label()
-        print(len(LABEL))
-        init_coordonnees()
-        init_faces()
-        init_voisins()
-        print(VOISINS)
-        print(all_valid_pairs(obj))
-
+        print("figure sans simplification")
         ps_register = ps.register_surface_mesh(
             "spot", obj.only_coordinates(), obj.only_faces()
         )
         ps.show()
 
 
-# main(False)
-main(True)
+if __name__ == "__main__":
+    taux = input(
+        "entrer le taux de compression souhaité ( 0 afficher la figure de base ) : \n"
+    )
+    main(int(taux))
