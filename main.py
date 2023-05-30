@@ -16,9 +16,8 @@ NB_SOMMETS = 0
 ps.init()
 
 # obj = load_obj("Mesh/hourglass_ico.obj")
-obj = load_obj("Mesh/octopus.obj")               # octopus
+obj = load_obj("Mesh/octopus.obj")  # octopus
 # obj = load_obj( 'Mesh/tet.obj')               # pyramide
-
 
 
 # `verts` is a Nx3 numpy array of vertex positions
@@ -291,11 +290,11 @@ def errorContractionV(v1, v2):
 
     if q1 < q2 and q1 < q3:
         resErr = q1
-    elif(q2 < q1 and q2 < q3):
+    elif q2 < q1 and q2 < q3:
         resErr = q2
     else:
         resErr = q3
-    
+
     return resErr, (v1, v2)
 
 
@@ -322,9 +321,9 @@ def posContractionV(v1, v2):
     q2 = quadraticError(V2, Q2)
     q3 = quadraticError(V3, Q3)
 
-    if(q1 < q2 and q1 < q3):
+    if q1 < q2 and q1 < q3:
         resPos = coorV1
-    elif(q2 < q1 and q2 < q3):
+    elif q2 < q1 and q2 < q3:
         resPos = coorV2
     else:
         resPos = coorV3
@@ -347,6 +346,7 @@ def calculateAllQ():
         res.append(Q(i))
 
     return res
+
 
 # Qs = calculateAllQ()
 
@@ -400,7 +400,6 @@ def editCoord(i, coord):
     COORDONNEES[i] = coord
 
 
-
 ####### Programme principal ########
 
 
@@ -417,6 +416,7 @@ def main(simplification):
 
         # Compute the Q matrices for all the initial vertices
         print("Compute the Q matrices for all the initial vertices")
+        Qs = calculateAllQ()
         print(Qs[0])
 
         # Compute the valid pairs
@@ -440,7 +440,7 @@ def main(simplification):
         nb_sim = 0
         while nb_sim < taux_simplification:
             pair = heapq.heappop(heapTab)
-            union(pair[1][0], pair[1][1])
+            union(pair[1][1], pair[1][0])
             # print("---------------")
             # print(posContractionV(pair[1][0], pair[1][1]))
             # print("---------------")
