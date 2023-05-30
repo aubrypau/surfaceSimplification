@@ -16,8 +16,9 @@ NB_SOMMETS = 0
 ps.init()
 
 # obj = load_obj("Mesh/hourglass_ico.obj")      # hourglass
-obj = load_obj("Mesh/octopus.obj")            # octopus
+# obj = load_obj("Mesh/octopus.obj")            # octopus
 # obj = load_obj( 'Mesh/tet.obj')               # pyramide
+obj = load_obj( 'Mesh/lapin.obj')             # lapin
 
 
 # `verts` is a Nx3 numpy array of vertex positions
