@@ -399,7 +399,7 @@ def editCoord(i, coord):
 # Programme principal
 
 def main(simplification):
-    if simplification:
+    if simplification != 0:
         # initialisation
         print("Initialisation")
         init_label()
@@ -433,8 +433,6 @@ def main(simplification):
         # Iteratively remove the pair (v1 , v2 ) of least cost from the heap, contract this pair, and update the costs of all valid pairs involving v1.
         print("removing pairs")
         taux_simplification = (NB_SOMMETS/100) * simplification
-        print(taux_simplification)
-        # while(len(heapTab) > taux_simplification):
         nb_sim = 0
         while(nb_sim < taux_simplification):
             pair = heapq.heappop(heapTab)
@@ -445,8 +443,6 @@ def main(simplification):
             editCoord(LABEL[pair[1][1]], posContractionV(pair[1][0], pair[1][1]))
             nb_sim += 1
 
-        # show the result of the contraction using the corresponding labels
-        # print(LABEL)
 
         print("show the result of the contraction using the corresponding labels")
         ps_Coord = []
@@ -459,27 +455,15 @@ def main(simplification):
         ps_register = ps.register_surface_mesh("spot", ps_Coord, ps_Faces)
         ps.show()
 
-
     else:
 
-        # initialisation
-        print("Initialisation")
-        init_label()
-        print(len(LABEL))
-        NB_SOMMETS = len(LABEL)
-        init_coordonnees()
-        init_faces()
-        init_voisins()
-        print(VOISINS)
-        print(all_valid_pairs(obj))
-
-
+        print("figure sans simplification")
         ps_register = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_faces())
         ps.show()
 
    
 
 if __name__ == "__main__":
-    taux = input("entrer le taux de compression souhaité ( rien pour afficher la figure de base ) : \n")
+    taux = input("entrer le taux de compression souhaité ( 0 afficher la figure de base ) : \n")
     main(int(taux))
 
