@@ -4,3 +4,9 @@ Simplification de surfaces triangulées via la méthode Surface simplification u
 -- Installations nécessaires --
 numpy
 polyscope
+heapq
+math
+
+
+-- Utilisation --
+

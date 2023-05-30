@@ -3,18 +3,19 @@ import numpy as np
 from wavefront import *
 import math
 import heapq
-import time
+
 
 THRESHOLD_T = 0
 MINIMUM_FACES = 10
 LABEL = []
 COORDONNEES = []
 FACES = []
+VOISINS = []
 
 ps.init()
 
-obj = load_obj("Mesh/hourglass_ico.obj")
-# obj = load_obj("Mesh/bunnyhead.obj")          # octopus
+# obj = load_obj("Mesh/hourglass_ico.obj")
+obj = load_obj("Mesh/bunnyhead.obj")          # octopus
 # obj = load_obj( 'Mesh/spot.obj')              # vache
 # obj = load_obj( 'Mesh/tet.obj')               # pyramide
 # obj = load_obj( 'Mesh/test_cube.obj')         # cube
@@ -42,6 +43,10 @@ def init_coordonnees():
 def init_faces():
     for i in range(len(obj.polygons)):
         FACES.append(obj.only_faces()[i])
+
+def init_voisins():
+    global VOISINS
+    VOISINS = get_all_neighbours(obj)
     
 
 
@@ -166,37 +171,35 @@ def is_edge(v1, v2):
             return True
     return False
 
+# def all_valid_pairs(obj):
+#     # compare each pair of vertices and chek if they are valid
+#     valid_pairs = []
+#     for v1 in range (0, len(obj.vertices)):
+#         for v2 in range (0, len(obj.vertices)):
+#             if ( (v1 != v2 and is_edge(v1, v2)) or (v1 != v2 and np.linalg.norm(np.subtract(obj.get_coord(v1), obj.get_coord(v2))) < THRESHOLD_T )):
+#                 if (v1, v2) not in valid_pairs and (v2, v1) not in valid_pairs:
+#                     valid_pairs.append((v1, v2))
+#     print("valid_pairs : ", valid_pairs)
+#     return valid_pairs
+
+def get_all_neighbours(obj):
+    all_neighbours = []
+    for v in range(0, len(obj.vertices)):
+        all_neighbours.append(obj.getAllEdgesOfVertex(v))
+    return all_neighbours
+
+
+
 def all_valid_pairs(obj):
-    # compare each pair of vertices and chek if they are valid
+    global VOISINS
+    print("CAlcul des voisins")
     valid_pairs = []
     for v1 in range (0, len(obj.vertices)):
-        for v2 in range (0, len(obj.vertices)):
-            if ( (v1 != v2 and is_edge(v1, v2)) or (v1 != v2 and np.linalg.norm(np.subtract(obj.get_coord(v1), obj.get_coord(v2))) < THRESHOLD_T )):
-                if (v1, v2) not in valid_pairs and (v2, v1) not in valid_pairs:
-                    valid_pairs.append((v1, v2))
-    print("valid_pairs : ", valid_pairs)
+        print("v1 : ", v1)
+        for voisin in VOISINS[v1]:
+            if (v1 < voisin):
+                valid_pairs.append((v1, voisin))
     return valid_pairs
-
-# def all_valid_pairs(obj):
-#     obj_file_path = "Mesh/hourglass_ico.obj"
-#     edges = []
-#     with open(obj_file_path, 'r') as file:
-#         for line in file:
-#             if line.startswith('f '): 
-#                 face_vertices = line.strip().split()[1:] 
-#                 num_vertices = len(face_vertices)
-#                 for i in range(num_vertices):
-#                     v1 = face_vertices[i]
-#                     v2 = face_vertices[(i + 1) % num_vertices]
-#                     print("v1 : ", v1, " v2 : ", v2)
-#                     edge = (int(v1)-1, int(v2)-1)
-#                     edge_inversed = (int(v2)-1, int(v1)-1)
-#                     if edge not in edges and edge_inversed not in edges:
-#                         edges.append(edge)
-#     print("edges : ", edges)
-#     print("len(edges) : ", len(edges))
-#     return edges
-
 
 
 
@@ -207,14 +210,6 @@ def all_valid_pairs(obj):
 def remove_vertex(obj, vertex_index):
     # Remove the vertex from the vertex list
     obj.vertices = np.delete(obj.vertices, vertex_index, 0)
-
-# VERIFIER SI CA MARCHE ( changement de la fonction is_edge )
-def get_all_neighbours(obj, vertex_index):
-    neighbours = []
-    for v in range(0, len(obj.vertices)):
-        if is_edge(vertex_index, v) and vertex_index != v:
-            neighbours.append(v)
-    return neighbours
 
 
 # Récupère les faces d'un sommet puis calcule la matrice pour chaque face
@@ -375,6 +370,7 @@ def main(simplification):
         print(len(LABEL))
         init_coordonnees()
         init_faces()
+        init_voisins()
 
 
         # Compute the Q matrices for all the initial vertices
@@ -394,12 +390,13 @@ def main(simplification):
         heapTab = convertContractionToHeap(res)
         heapq.heapify(heapTab)
         heapsort(heapTab)
+        print(heapTab)
         
 
         # Iteratively remove the pair (v1 , v2 ) of least cost from the heap, contract this pair, and update the costs of all valid pairs involving v1.
         # while the lowest cost contraction is greater than 5
         print("removing pairs")
-        while(heapTab[0][0] < 3):
+        while(len(heapTab) > 700):
             pair = heapq.heappop(heapTab)
             union(pair[1][0], pair[1][1])
 
@@ -419,6 +416,18 @@ def main(simplification):
 
 
     else:
+
+        # initialisation
+        print("Initialisation")
+        init_label()
+        print(len(LABEL))
+        init_coordonnees()
+        init_faces()
+        init_voisins()
+        print(VOISINS)
+        print(all_valid_pairs(obj))
+
+
         ps_register = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_faces())
         ps.show()
 
