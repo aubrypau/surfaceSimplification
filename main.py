@@ -16,12 +16,9 @@ NB_SOMMETS = 0
 ps.init()
 
 # obj = load_obj("Mesh/hourglass_ico.obj")
-# obj = load_obj("Mesh/bunnyhead.obj")          # lapin
 obj = load_obj("Mesh/octopus.obj")               # octopus
-# obj = load_obj( 'Mesh/spot.obj')              # vache
 # obj = load_obj( 'Mesh/tet.obj')               # pyramide
-# obj = load_obj( 'Mesh/test_cube.obj')         # cube
-# obj = load_obj( 'Mesh/feline_half.obj')       # feline
+
 
 
 # `verts` is a Nx3 numpy array of vertex positions
@@ -396,7 +393,9 @@ def getCoord(i):
 def editCoord(i, coord):
     COORDONNEES[i] = coord
 
-# Programme principal
+
+
+####### Programme principal ########
 
 def main(simplification):
     if simplification != 0:
