@@ -348,7 +348,7 @@ def calculateAllQ():
     return res
 
 
-# Qs = calculateAllQ()
+Qs = calculateAllQ()
 
 
 def computeContraction(validPairs):
@@ -416,7 +416,6 @@ def main(simplification):
 
         # Compute the Q matrices for all the initial vertices
         print("Compute the Q matrices for all the initial vertices")
-        Qs = calculateAllQ()
         print(Qs[0])
 
         # Compute the valid pairs
