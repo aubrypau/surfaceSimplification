@@ -15,7 +15,7 @@ Le fichier main.py contient un exemple d'utilisation de la fonction de simplific
 
 La fonction de simplification va demander un taux de simplification puis va ensuite afficher la surface simplifiée.
 Ce taux de simplification est un nombre entre 0 et 100.
-Il correspond au pourcentage de sommets que l'on souhaite garder dans la surface simplifiée.
+Il correspond au pourcentage de sommets que l'on souhaite enlever dans la surface simplifiée.
 
 -- Fonctionnement --
 
