@@ -197,7 +197,6 @@ def all_valid_pairs(obj):
     print("CAlcul des voisins")
     valid_pairs = []
     for v1 in range(0, len(obj.vertices)):
-        print("v1 : ", v1)
         for voisin in VOISINS[v1]:
             if v1 < voisin:
                 valid_pairs.append((v1, voisin))
@@ -267,10 +266,10 @@ def moyPointContraction(v1, v2):
 
 def errorContractionV(v1, v2):
     global Qs
-    coorV1 = obj.get_coord(v1)
-    coorV2 = obj.get_coord(v2)
-    Q1 = Qs[v1]
-    Q2 = Qs[v2]
+    coorV1 = obj.get_coord(label(v1))
+    coorV2 = obj.get_coord(label(v2))
+    Q1 = Qs[label(v1)]
+    Q2 = Qs[label(v2)]
 
     coorV3 = moyPointContraction(coorV1, coorV2)
     Q3 = Q1 + Q2
@@ -300,10 +299,10 @@ def errorContractionV(v1, v2):
 
 def posContractionV(v1, v2):
     global Qs
-    coorV1 = obj.get_coord(v1)
-    coorV2 = obj.get_coord(v2)
-    Q1 = Qs[v1]
-    Q2 = Qs[v2]
+    coorV1 = obj.get_coord(label(v1))
+    coorV2 = obj.get_coord(label(v2))
+    Q1 = Qs[label(v1)]
+    Q2 = Qs[label(v2)]
 
     coorV3 = moyPointContraction(coorV1, coorV2)
     Q3 = Q1 + Q2
@@ -410,6 +409,8 @@ def getPairsWithV1(heap, v1):
 def updatePairsWithV1(heap, list):
     for i in range(len(list)):
         heap[list[i]][0] = errorContractionV(heap[list[i]][1][0], heap[list[i]][1][1])[0]
+
+
 ####### Programme principal ########
 
 
@@ -446,22 +447,24 @@ def main(simplification):
         # Iteratively remove the pair (v1 , v2 ) of least cost from the heap, contract this pair, and update the costs of all valid pairs involving v1.
         print("removing pairs")
         taux_simplification = (NB_SOMMETS / 100) * simplification
-        nb_sim = 0
-        while nb_sim < taux_simplification:
+        nb_simplification = 0
+        while nb_simplification < taux_simplification:
             pair = heapq.heappop(heapTab)
+            editCoord(LABEL[pair[1][1]], posContractionV(label(pair[1][0]), label(pair[1][1])))
             union(pair[1][0], pair[1][1])
-            print("---------------")
-            print(pair[1][0])
-            print(COORDONNEES[pair[1][0]])
-            print(pair[1][1])
-            print(COORDONNEES[pair[1][1]])
-            print(posContractionV(pair[1][0], pair[1][1]))
-            print("---------------")
-            editCoord(LABEL[pair[1][1]], posContractionV(pair[1][0], pair[1][1]))
+            # print("###############")
+            # print("v1 : ",pair[1][0], "représenté par ", label(pair[1][0]))
+            # print(COORDONNEES[label(pair[1][0])])
+            # print("v2 : ",pair[1][1], "représenté par ", label(pair[1][1]))
+            # print(COORDONNEES[label(pair[1][1])])
+            # print("position contraction : ",posContractionV(label(pair[1][0]), label(pair[1][1])))
+            # print(heapTab)
+            # print(len(heapTab))
+            # print("---------------")
             to_update = getPairsWithV1(heapTab, pair[1][1])
             updatePairsWithV1(heapTab, to_update)
             heapsort(heapTab)
-            nb_sim += 1
+            nb_simplification += 1
 
         print("show the result of the contraction using the corresponding labels")
         ps_Coord = []
