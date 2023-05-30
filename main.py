@@ -298,7 +298,7 @@ def errorContractionV(v1, v2):
         resErr = q3
         resPos = coorV3
     
-    return resErr
+    return resErr, (v1, v2)
 
 
 def posContractionV(v1, v2):
@@ -365,7 +365,7 @@ def computeContraction(validPairs):
 def convertContractionToHeap(tab):
     res = []
     for i in range(len(tab)):
-        res.append([tab[i][0].item(), tab[i][2]])
+        res.append([tab[i][0].item(), tab[i][1]])
     return res
 
 
@@ -436,6 +436,7 @@ def main(simplification):
         while(heapTab[0][0] < 3):
             pair = heapq.heappop(heapTab)
             union(pair[1][0], pair[1][1])
+            editCoord(LABEL[pair[1][1]], posContractionV(pair[1][0], pair[1][1]))
 
         # show the result of the contraction using the corresponding labels
         # print(LABEL)
