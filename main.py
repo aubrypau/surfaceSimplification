@@ -34,6 +34,7 @@ def init_label():
     for i in range(len(obj.vertices)):
         LABEL.append(i)
 
+
 def init_coordonnees():
     for i in range(len(obj.vertices)):
         COORDONNEES.append(obj.only_coordinates()[i])
@@ -43,10 +44,10 @@ def init_faces():
     for i in range(len(obj.polygons)):
         FACES.append(obj.only_faces()[i])
 
+
 def init_voisins():
     global VOISINS
     VOISINS = get_all_neighbours(obj)
-    
 
 
 def getAllEdges(v1):
@@ -56,6 +57,7 @@ def getAllEdges(v1):
             if is_edge(v1, v2):
                 tab.append((v2))
     return tab
+
 
 # En donnant le numéro du sommet, on récupère toutes les faces qui le contiennent
 def getAllFaces(v1):
@@ -122,25 +124,25 @@ def scalarProduct(n, P):
 
 
 # test pour la matrice [ a b c d ]
-P = [1, 4, 8]
-R = [2, 5, 4]
-Q = [6, 2, 3]
+# P = [1, 4, 8]
+# R = [2, 5, 4]
+# Q = [6, 2, 3]
 
-PR = vect(P, R)
-# print(PR)
-PQ = vect(P, Q)
-# print(PQ)
-PQPR = prodVect(PQ, PR)
-# print(PQPR)
+# PR = vect(P, R)
+# # print(PR)
+# PQ = vect(P, Q)
+# # print(PQ)
+# PQPR = prodVect(PQ, PR)
+# # print(PQPR)
 
-norme = normeVect(PQPR)
-# print(norme)
+# norme = normeVect(PQPR)
+# # print(norme)
 
-n = prodVectNormed(PQPR, norme)
+# n = prodVectNormed(PQPR, norme)
 
-d = scalarProduct(n, P)
-# la matrice a b c d
-n.append(d / norme)
+# d = scalarProduct(n, P)
+# # la matrice a b c d
+# n.append(d / norme)
 # print(n)
 
 
@@ -158,9 +160,10 @@ def matrixABCDfromPoints(P, Q, R):
     return n
 
 
-abcd = matrixABCDfromPoints(P, Q, R)
+# abcd = matrixABCDfromPoints(P, Q, R)
 
 ############ Etape 2 ############
+
 
 # if v1 and v2 are connected by an edge return true
 def is_edge(v1, v2):
@@ -169,6 +172,7 @@ def is_edge(v1, v2):
         if e == v2:
             return True
     return False
+
 
 # def all_valid_pairs(obj):
 #     # compare each pair of vertices and chek if they are valid
@@ -181,6 +185,7 @@ def is_edge(v1, v2):
 #     print("valid_pairs : ", valid_pairs)
 #     return valid_pairs
 
+
 def get_all_neighbours(obj):
     all_neighbours = []
     for v in range(0, len(obj.vertices)):
@@ -188,18 +193,16 @@ def get_all_neighbours(obj):
     return all_neighbours
 
 
-
 def all_valid_pairs(obj):
     global VOISINS
     print("CAlcul des voisins")
     valid_pairs = []
-    for v1 in range (0, len(obj.vertices)):
+    for v1 in range(0, len(obj.vertices)):
         print("v1 : ", v1)
         for voisin in VOISINS[v1]:
-            if (v1 < voisin):
+            if v1 < voisin:
                 valid_pairs.append((v1, voisin))
     return valid_pairs
-
 
 
 ####################################
@@ -222,15 +225,15 @@ def getAllABCDfromVertex(vNumber):
         R = obj.get_coord(f[i][1])
         Q = obj.get_coord(f[i][2])
         abcd.append(matrixABCDfromPoints(P, Q, R))
-    
+
     return abcd
+
 
 def getAllKfromVertex(vNumber):
     Kp = []
     ABCDs = getAllABCDfromVertex(vNumber)
 
     for i in range(len(ABCDs)):
-
         matrice_initiale = np.matrix(ABCDs[i])
         matrice_ligne = np.reshape(matrice_initiale, (1, 4))
         matrice_colonne = np.reshape(matrice_ligne, (4, 1))
@@ -238,26 +241,30 @@ def getAllKfromVertex(vNumber):
 
     return Kp
 
+
 def Q(vNumber):
     Kp = getAllKfromVertex(vNumber)
-    
+
     Q = Kp[0]
-    #Calcul la somme des erreurs
+    # Calcul la somme des erreurs
     for i in range(1, len(Kp)):
         Q += Kp[i]
 
-    return  Q 
+    return Q
+
 
 def quadraticError(v, Q):
     return v.T * Q * v
 
+
 def moyPointContraction(v1, v2):
-    res = [0,0,0]
+    res = [0, 0, 0]
 
     for i in range(3):
         res[i] = (v1[i] + v2[i]) / 2
-    
+
     return res
+
 
 def errorContractionV(v1, v2):
     global Qs
@@ -265,32 +272,29 @@ def errorContractionV(v1, v2):
     coorV2 = obj.get_coord(v2)
     Q1 = Qs[v1]
     Q2 = Qs[v2]
-    
+
     coorV3 = moyPointContraction(coorV1, coorV2)
     Q3 = Q1 + Q2
 
-    V1 = [ coorV1[0], coorV1[1], coorV1[2], 1]
+    V1 = [coorV1[0], coorV1[1], coorV1[2], 1]
     V1 = np.matrix(V1).T
-    
-    V2 = [ coorV2[0], coorV2[1], coorV2[2], 1]
+
+    V2 = [coorV2[0], coorV2[1], coorV2[2], 1]
     V2 = np.matrix(V2).T
 
-    V3 = [ coorV3[0], coorV3[1], coorV3[2], 1]
+    V3 = [coorV3[0], coorV3[1], coorV3[2], 1]
     V3 = np.matrix(V3).T
 
     q1 = quadraticError(V1, Q1)
     q2 = quadraticError(V2, Q2)
     q3 = quadraticError(V3, Q3)
 
-    if(q1 < q2 and q1 < q3):
+    if q1 < q2 and q1 < q3:
         resErr = q1
-        resPos = coorV1
     elif(q2 < q1 and q2 < q3):
         resErr = q2
-        resPos = coorV2
     else:
         resErr = q3
-        resPos = coorV3
     
     return resErr, (v1, v2)
 
@@ -301,17 +305,17 @@ def posContractionV(v1, v2):
     coorV2 = obj.get_coord(v2)
     Q1 = Qs[v1]
     Q2 = Qs[v2]
-    
+
     coorV3 = moyPointContraction(coorV1, coorV2)
     Q3 = Q1 + Q2
 
-    V1 = [ coorV1[0], coorV1[1], coorV1[2], 1]
+    V1 = [coorV1[0], coorV1[1], coorV1[2], 1]
     V1 = np.matrix(V1).T
-    
-    V2 = [ coorV2[0], coorV2[1], coorV2[2], 1]
+
+    V2 = [coorV2[0], coorV2[1], coorV2[2], 1]
     V2 = np.matrix(V2).T
 
-    V3 = [ coorV3[0], coorV3[1], coorV3[2], 1]
+    V3 = [coorV3[0], coorV3[1], coorV3[2], 1]
     V3 = np.matrix(V3).T
 
     q1 = quadraticError(V1, Q1)
@@ -319,23 +323,22 @@ def posContractionV(v1, v2):
     q3 = quadraticError(V3, Q3)
 
     if(q1 < q2 and q1 < q3):
-        resErr = q1
         resPos = coorV1
     elif(q2 < q1 and q2 < q3):
-        resErr = q2
         resPos = coorV2
     else:
-        resErr = q3
         resPos = coorV3
-    
+
     return resPos
-    
+
+
 # calculateQofVertex(4)
 # print(Q(22))
 # print(Q(3))
 
 # print(getAllQfromVertex(12))
-# permet de calculer toutes les matrices Q pour touts les sommets 
+# permet de calculer toutes les matrices Q pour touts les sommets
+
 
 def calculateAllQ():
     res = []
@@ -345,7 +348,7 @@ def calculateAllQ():
 
     return res
 
-Qs = calculateAllQ()
+# Qs = calculateAllQ()
 
 
 def computeContraction(validPairs):
@@ -353,7 +356,6 @@ def computeContraction(validPairs):
     for i in range(len(validPairs)):
         cost.append(errorContractionV(validPairs[i][0], validPairs[i][1]))
     return cost
-
 
 
 def convertContractionToHeap(tab):
@@ -370,25 +372,29 @@ def heapsort(iterable):
     return [heapq.heappop(h) for i in range(len(h))]
 
 
-
 # Gestion des labels
 
+
 def label(i):
-    while (i != LABEL[i]):
+    while i != LABEL[i]:
         i = LABEL[i]
     return i
+
 
 def union(i, j):
     LABEL[label(i)] = label(j)
 
+
 def find(i, j):
-    if (label(i) == label(j)):
+    if label(i) == label(j):
         return True
     else:
         return False
-    
+
+
 def getCoord(i):
     return COORDONNEES[label(i)]
+
 
 def editCoord(i, coord):
     COORDONNEES[i] = coord
@@ -396,6 +402,7 @@ def editCoord(i, coord):
 
 
 ####### Programme principal ########
+
 
 def main(simplification):
     if simplification != 0:
@@ -407,7 +414,6 @@ def main(simplification):
         init_coordonnees()
         init_faces()
         init_voisins()
-
 
         # Compute the Q matrices for all the initial vertices
         print("Compute the Q matrices for all the initial vertices")
@@ -427,13 +433,12 @@ def main(simplification):
         heapq.heapify(heapTab)
         heapsort(heapTab)
         print(heapTab)
-        
 
         # Iteratively remove the pair (v1 , v2 ) of least cost from the heap, contract this pair, and update the costs of all valid pairs involving v1.
         print("removing pairs")
-        taux_simplification = (NB_SOMMETS/100) * simplification
+        taux_simplification = (NB_SOMMETS / 100) * simplification
         nb_sim = 0
-        while(nb_sim < taux_simplification):
+        while nb_sim < taux_simplification:
             pair = heapq.heappop(heapTab)
             union(pair[1][0], pair[1][1])
             # print("---------------")
@@ -441,7 +446,6 @@ def main(simplification):
             # print("---------------")
             editCoord(LABEL[pair[1][1]], posContractionV(pair[1][0], pair[1][1]))
             nb_sim += 1
-
 
         print("show the result of the contraction using the corresponding labels")
         ps_Coord = []
@@ -455,14 +459,15 @@ def main(simplification):
         ps.show()
 
     else:
-
         print("figure sans simplification")
-        ps_register = ps.register_surface_mesh("spot", obj.only_coordinates(), obj.only_faces())
+        ps_register = ps.register_surface_mesh(
+            "spot", obj.only_coordinates(), obj.only_faces()
+        )
         ps.show()
 
-   
 
 if __name__ == "__main__":
-    taux = input("entrer le taux de compression souhaité ( 0 afficher la figure de base ) : \n")
+    taux = input(
+        "entrer le taux de compression souhaité ( 0 afficher la figure de base ) : \n"
+    )
     main(int(taux))
-
