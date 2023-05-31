@@ -193,7 +193,7 @@ def is_edge(v1, v2):
 
 def get_all_neighbours(obj):
     all_neighbours = []
-    print("Calcul des voisins")
+    print("Compute all neighbours")
     tb = time.time()
     for v in tqdm(range(0, len(obj.vertices))):
         all_neighbours.append(obj.getAllEdgesOfVertex(v))
@@ -203,7 +203,7 @@ def get_all_neighbours(obj):
 
 def all_valid_pairs(obj):
     global VOISINS
-    print("Calcul des pairs valides")
+    print("Compute the valids pairs")
     tb = time.time()
     valid_pairs = []
     for v1 in tqdm(range(0, len(obj.vertices))):
@@ -444,10 +444,10 @@ def main(simplification):
         global NB_SOMMETS, LABEL, Qs, COORDONNEES
         # initialisation
         print("\n###### Surfaces Simplification ######")
-        print("Step 1 - Initialisation")
+        print("\nStep 1 - Initialisation")
         init_label()
         NB_SOMMETS = len(LABEL)
-        print("Vertex number : ", NB_SOMMETS)
+        print("\nVertex number : ", NB_SOMMETS, "\n")
         init_coordonnees()
         init_faces()
         init_voisins()
@@ -500,9 +500,8 @@ def main(simplification):
             pbar.update(1)
             pbar.set_description("Simplification : %i" % nb_simplification)
             
-
         print("\ntime: ", time.time() - tb, "\n")
-        print("Step 7 - Show the result of the contraction using the corresponding labels")
+
         ps_Coord = []
         for i in range(len(COORDONNEES)):
             ps_Coord.append(COORDONNEES[label(i)])
@@ -510,7 +509,7 @@ def main(simplification):
 
         ps_Faces = FACES
 
-        print("\nNombre de sommets après simplification : ",len(LABEL)-nb_simplification, "\n")
+        print("\nVertex number after simplification : ",len(LABEL)-nb_simplification, "\n")
 
         ps_register = ps.register_surface_mesh("spot", ps_Coord, ps_Faces)
         ps.show()
