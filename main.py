@@ -480,10 +480,6 @@ def main(simplification):
         pbar = tqdm(total=nb_simplification)
         while nb_simplification < taux_simplification:
             pair = heapq.heappop(heapTab)
-            editCoord(
-                LABEL[pair[1][1]], posContractionV(label(pair[1][0]), label(pair[1][1]))
-            )
-            union(pair[1][0], pair[1][1])
             # print("###############")
             # print("v1 : ",pair[1][0], "représenté par ", label(pair[1][0]))
             # print(COORDONNEES[label(pair[1][0])])
@@ -493,8 +489,29 @@ def main(simplification):
             # print(heapTab)
             # print(len(heapTab))
             # print("---------------")
+            editCoord(
+                LABEL[pair[1][1]], posContractionV(label(pair[1][0]), label(pair[1][1]))
+            )
+            editCoord(
+                LABEL[pair[1][0]], posContractionV(label(pair[1][0]), label(pair[1][1]))
+            )
+            union(pair[1][0], pair[1][1])
+            Qs[label(pair[1][0])] = Qs[label(pair[1][0])] + Qs[label(pair[1][1])]
+            # print("###############")
+            # print("v1 : ",pair[1][0], "représenté par ", label(pair[1][0]))
+            # print(COORDONNEES[label(pair[1][0])])
+            # print("v2 : ",pair[1][1], "représenté par ", label(pair[1][1]))
+            # print(COORDONNEES[label(pair[1][1])])
+            # print("position contraction : ",posContractionV(label(pair[1][0]), label(pair[1][1])))
+            # print(COORDONNEES[pair[1][0]])
+            # print(COORDONNEES[pair[1][1]])
+            # print(heapTab)
+            # print(len(heapTab))
+            # print("---------------")
             to_update = getPairsWithV1(heapTab, pair[1][1])
             updatePairsWithV1(heapTab, to_update)
+            to_updateV2 = getPairsWithV1(heapTab, pair[1][0])
+            updatePairsWithV1(heapTab, to_updateV2)
             heapsort(heapTab)
             nb_simplification += 1
             pbar.update(1)
@@ -516,7 +533,7 @@ def main(simplification):
 
     else:
 
-        print("figure sans simplification")
+        print("\nObject without simplification")
         ps_register = ps.register_surface_mesh(
             "spot", obj.only_coordinates(), obj.only_faces()
         )
@@ -525,6 +542,6 @@ def main(simplification):
 
 if __name__ == "__main__":
     taux = input(
-        "Enter the compression ratio ( 0 for the orignal object ) : \n"
+        "\nEnter the compression ratio ( 0 for the orignal object ) : \n"
     )
     main(int(taux))
