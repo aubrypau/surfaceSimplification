@@ -17,9 +17,9 @@ Qs = []
 ps.init()
 
 # obj = load_obj("Mesh/hourglass_ico.obj")  # hourglass
-obj = load_obj("Mesh/octopus.obj")  # octopus
+# obj = load_obj("Mesh/octopus.obj")  # octopus
 # obj = load_obj( 'Mesh/tet.obj')               # pyramide
-# obj = load_obj( 'Mesh/lapin.obj')             # lapin
+obj = load_obj( 'Mesh/lapin.obj')             # lapin
 
 
 # `verts` is a Nx3 numpy array of vertex positions
@@ -32,16 +32,19 @@ obj = load_obj("Mesh/octopus.obj")  # octopus
 
 
 def init_label():
+    global LABEL
     for i in range(len(obj.vertices)):
         LABEL.append(i)
 
 
 def init_coordonnees():
+    global COORDONNEES
     for i in range(len(obj.vertices)):
         COORDONNEES.append(obj.only_coordinates()[i])
 
 
 def init_faces():
+    global FACES
     for i in range(len(obj.polygons)):
         FACES.append(obj.only_faces()[i])
 
@@ -427,11 +430,11 @@ def updatePairsWithV1(heap, list):
 
 def main(simplification):
 
-    if simplification != 0:
+    if simplification != 0 and simplification < 100:
 
         global NB_SOMMETS, LABEL, Qs, COORDONNEES
         # initialisation
-        print("Initialisation")
+        print("Step 1 - Initialisation")
         init_label()
         NB_SOMMETS = len(LABEL)
         print("Vertex number : ", NB_SOMMETS)
@@ -440,26 +443,26 @@ def main(simplification):
         init_voisins()
 
         # Compute the Q matrices for all the initial vertices
-        print("Compute the Q matrices for all the initial vertices")
+        print("Step 2 - Compute the Q matrices for all the initial vertices")
         # print(Qs[0])
 
         # Compute the valid pairs
-        print("Compute the valid pairs")
+        print("Step 3 - Compute the valid pairs")
         valid_pairs = all_valid_pairs(obj)
 
         # Compute the cost of each contraction
-        print("Compute the cost of each contraction")
+        print("Step 4 - Compute the cost of each contraction")
         res = computeContraction(valid_pairs)
 
         # Place all the pairs in a heap keyed on cost with the minimum cost pair at the top
-        print("Place in the heap")
+        print("Step 5 - Place pairs in the heap")
         heapTab = convertContractionToHeap(res)
         heapq.heapify(heapTab)
         heapsort(heapTab)
         # print(heapTab)
 
         # Iteratively remove the pair (v1 , v2 ) of least cost from the heap, contract this pair, and update the costs of all valid pairs involving v1.
-        print("Removing pairs")
+        print("Step 6 - Removing pairs")
         taux_simplification = (NB_SOMMETS / 100) * simplification
         nb_simplification = 0
         while nb_simplification < taux_simplification:
@@ -482,7 +485,7 @@ def main(simplification):
             heapsort(heapTab)
             nb_simplification += 1
 
-        print("Show the result of the contraction using the corresponding labels")
+        print("Step 7 - Show the result of the contraction using the corresponding labels")
         ps_Coord = []
         for i in range(len(COORDONNEES)):
             ps_Coord.append(COORDONNEES[label(i)])
@@ -494,7 +497,7 @@ def main(simplification):
         ps.show()
 
     else:
-        
+
         print("figure sans simplification")
         ps_register = ps.register_surface_mesh(
             "spot", obj.only_coordinates(), obj.only_faces()
