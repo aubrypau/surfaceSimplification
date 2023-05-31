@@ -13,13 +13,14 @@ COORDONNEES = []
 FACES = []
 VOISINS = []
 NB_SOMMETS = 0
+Qs = []
 
 ps.init()
 
 # obj = load_obj("Mesh/hourglass_ico.obj")      # hourglass
-obj = load_obj("Mesh/octopus.obj")            # octopus
+# obj = load_obj("Mesh/octopus.obj")            # octopus
 # obj = load_obj( 'Mesh/tet.obj')               # pyramide
-# obj = load_obj( 'Mesh/lapin.obj')             # lapin
+obj = load_obj( 'Mesh/lapin.obj')             # lapin
 
 
 # `verts` is a Nx3 numpy array of vertex positions
@@ -32,16 +33,19 @@ obj = load_obj("Mesh/octopus.obj")            # octopus
 
 
 def init_label():
+    global LABEL
     for i in range(len(obj.vertices)):
         LABEL.append(i)
 
 
 def init_coordonnees():
+    global COORDONNEES
     for i in range(len(obj.vertices)):
         COORDONNEES.append(obj.only_coordinates()[i])
 
 
 def init_faces():
+    global FACES
     for i in range(len(obj.polygons)):
         FACES.append(obj.only_faces()[i])
 
@@ -385,12 +389,14 @@ def heapsort(iterable):
 
 
 def label(i):
+    global LABEL
     while i != LABEL[i]:
         i = LABEL[i]
     return i
 
 
 def union(i, j):
+    global LABEL
     for k in range(len(LABEL)):
         if LABEL[k] == label(i):
             LABEL[k] = label(j)
@@ -405,10 +411,12 @@ def find(i, j):
 
 
 def getCoord(i):
+    global COORDONNEES
     return COORDONNEES[label(i)]
 
 
 def editCoord(i, coord):
+    global COORDONNEES
     COORDONNEES[i] = coord
 
 
@@ -429,31 +437,35 @@ def updatePairsWithV1(heap, list):
 
 ####### Programme principal ########
 
-
 def main(simplification):
     global Qs
-    if simplification != 0:
+    if simplification != 0 and simplification < 100:
+
+        global NB_SOMMETS, LABEL, Qs, COORDONNEES
         # initialisation
-        print("\n###### Simplification des surfaces ######")
+        print("\n###### Surfaces Simplification ######")
+        print("Step 1 - Initialisation")
         init_label()
         NB_SOMMETS = len(LABEL)
-        print("\nNombre de sommets initiales : ",NB_SOMMETS, "\n")
+        print("Vertex number : ", NB_SOMMETS)
         init_coordonnees()
         init_faces()
         init_voisins()
 
         # Compute the Q matrices for all the initial vertices
+        print("Step 2 - Compute the Q matrices for all the initial vertices")
         Qs = calculateAllQ()
 
         # Compute the valid pairs
+        print("Step 3 - Compute the valid pairs")
         valid_pairs = all_valid_pairs(obj)
 
         # Compute the cost of each contraction
-        print("\nCalcul des couts de contraction")
+        print("Step 4 - Compute the cost of each contraction")
         res = computeContraction(valid_pairs)
 
         # Place all the pairs in a heap keyed on cost with the minimum cost pair at the top
-        print("\nremplissage du tas")
+        print("Step 5 - Place pairs in the heap")
         trt = time.time()
         heapTab = convertContractionToHeap(res)
         heapq.heapify(heapTab)
@@ -461,7 +473,7 @@ def main(simplification):
         print("time: ", time.time() - trt, "\n")
 
         # Iteratively remove the pair (v1 , v2 ) of least cost from the heap, contract this pair, and update the costs of all valid pairs involving v1.
-        print("\nsuppresion des paires")
+        print("Step 6 - Removing pairs")
         tb = time.time()
         taux_simplification = (NB_SOMMETS / 100) * simplification
         nb_simplification = 0
@@ -490,6 +502,7 @@ def main(simplification):
             
 
         print("\ntime: ", time.time() - tb, "\n")
+        print("Step 7 - Show the result of the contraction using the corresponding labels")
         ps_Coord = []
         for i in range(len(COORDONNEES)):
             ps_Coord.append(COORDONNEES[label(i)])
@@ -503,6 +516,7 @@ def main(simplification):
         ps.show()
 
     else:
+
         print("figure sans simplification")
         ps_register = ps.register_surface_mesh(
             "spot", obj.only_coordinates(), obj.only_faces()
@@ -512,6 +526,6 @@ def main(simplification):
 
 if __name__ == "__main__":
     taux = input(
-        "\nEntrez le taux de compression souhaité ( 0 afficher la figure de base ) : \n"
+        "Enter the compression ratio ( 0 for the orignal object ) : \n"
     )
     main(int(taux))
