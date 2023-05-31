@@ -29,3 +29,7 @@ Cette métrique d'erreur est calculée en fonction de la distance entre le somme
 On place ensuite chaque couple sommet-voisin dans un tas en fonction de sa métrique d'erreur.
 On fusionne ensuite chaque couple en les retirant du tas et en recalculant la métrique d'erreur du sommet résultant de la fusion.
 On répète cette opération jusqu'à ce que le nombre de sommets de la surface soit égal au nombre de sommets souhaité.
+
+-- Résultats --
+
+
