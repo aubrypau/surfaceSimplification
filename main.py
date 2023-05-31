@@ -12,11 +12,12 @@ COORDONNEES = []
 FACES = []
 VOISINS = []
 NB_SOMMETS = 0
+Qs = []
 
 ps.init()
 
-obj = load_obj("Mesh/hourglass_ico.obj")  # hourglass
-# obj = load_obj("Mesh/octopus.obj")  # octopus
+# obj = load_obj("Mesh/hourglass_ico.obj")  # hourglass
+obj = load_obj("Mesh/octopus.obj")  # octopus
 # obj = load_obj( 'Mesh/tet.obj')               # pyramide
 # obj = load_obj( 'Mesh/lapin.obj')             # lapin
 
@@ -376,12 +377,14 @@ def heapsort(iterable):
 
 
 def label(i):
+    global LABEL
     while i != LABEL[i]:
         i = LABEL[i]
     return i
 
 
 def union(i, j):
+    global LABEL
     for k in range(len(LABEL)):
         if LABEL[k] == label(i):
             LABEL[k] = label(j)
@@ -396,10 +399,12 @@ def find(i, j):
 
 
 def getCoord(i):
+    global COORDONNEES
     return COORDONNEES[label(i)]
 
 
 def editCoord(i, coord):
+    global COORDONNEES
     COORDONNEES[i] = coord
 
 
@@ -423,6 +428,8 @@ def updatePairsWithV1(heap, list):
 
 def main(simplification):
     if simplification != 0:
+
+        global NB_SOMMETS, LABEL, Qs, COORDONNEES
         # initialisation
         print("Initialisation")
         init_label()
@@ -434,7 +441,7 @@ def main(simplification):
 
         # Compute the Q matrices for all the initial vertices
         print("Compute the Q matrices for all the initial vertices")
-        print(Qs[0])
+        # print(Qs[0])
 
         # Compute the valid pairs
         print("Compute the valid pairs")
@@ -449,7 +456,7 @@ def main(simplification):
         heapTab = convertContractionToHeap(res)
         heapq.heapify(heapTab)
         heapsort(heapTab)
-        print(heapTab)
+        # print(heapTab)
 
         # Iteratively remove the pair (v1 , v2 ) of least cost from the heap, contract this pair, and update the costs of all valid pairs involving v1.
         print("removing pairs")
