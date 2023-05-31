@@ -15,8 +15,8 @@ NB_SOMMETS = 0
 
 ps.init()
 
-obj = load_obj("Mesh/hourglass_ico.obj")      # hourglass
-# obj = load_obj("Mesh/octopus.obj")            # octopus
+obj = load_obj("Mesh/hourglass_ico.obj")  # hourglass
+# obj = load_obj("Mesh/octopus.obj")  # octopus
 # obj = load_obj( 'Mesh/tet.obj')               # pyramide
 # obj = load_obj( 'Mesh/lapin.obj')             # lapin
 
@@ -382,6 +382,9 @@ def label(i):
 
 
 def union(i, j):
+    for k in range(len(LABEL)):
+        if LABEL[k] == label(i):
+            LABEL[k] = label(j)
     LABEL[label(i)] = label(j)
 
 
@@ -403,13 +406,16 @@ def editCoord(i, coord):
 def getPairsWithV1(heap, v1):
     res = []
     for i in range(len(heap)):
-        if (heap[i][1][0] == v1 or heap[i][1][1] == v1 ):
+        if heap[i][1][0] == v1 or heap[i][1][1] == v1:
             res.append(i)
     return res
 
+
 def updatePairsWithV1(heap, list):
     for i in range(len(list)):
-        heap[list[i]][0] = errorContractionV(heap[list[i]][1][0], heap[list[i]][1][1])[0]
+        heap[list[i]][0] = errorContractionV(heap[list[i]][1][0], heap[list[i]][1][1])[
+            0
+        ]
 
 
 ####### Programme principal ########
@@ -451,7 +457,9 @@ def main(simplification):
         nb_simplification = 0
         while nb_simplification < taux_simplification:
             pair = heapq.heappop(heapTab)
-            editCoord(LABEL[pair[1][1]], posContractionV(label(pair[1][0]), label(pair[1][1])))
+            editCoord(
+                LABEL[pair[1][1]], posContractionV(label(pair[1][0]), label(pair[1][1]))
+            )
             union(pair[1][0], pair[1][1])
             # print("###############")
             # print("v1 : ",pair[1][0], "représenté par ", label(pair[1][0]))
