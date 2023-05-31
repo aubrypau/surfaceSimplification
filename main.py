@@ -3,7 +3,8 @@ import numpy as np
 from wavefront import *
 import math
 import heapq
-
+import time
+from tqdm import tqdm
 
 THRESHOLD_T = 0
 MINIMUM_FACES = 10
@@ -15,8 +16,8 @@ NB_SOMMETS = 0
 
 ps.init()
 
-obj = load_obj("Mesh/hourglass_ico.obj")  # hourglass
-# obj = load_obj("Mesh/octopus.obj")  # octopus
+# obj = load_obj("Mesh/hourglass_ico.obj")      # hourglass
+obj = load_obj("Mesh/octopus.obj")            # octopus
 # obj = load_obj( 'Mesh/tet.obj')               # pyramide
 # obj = load_obj( 'Mesh/lapin.obj')             # lapin
 
@@ -188,19 +189,24 @@ def is_edge(v1, v2):
 
 def get_all_neighbours(obj):
     all_neighbours = []
-    for v in range(0, len(obj.vertices)):
+    print("Calcul des voisins")
+    tb = time.time()
+    for v in tqdm(range(0, len(obj.vertices))):
         all_neighbours.append(obj.getAllEdgesOfVertex(v))
+    print('time:', time.time() - tb, "\n")
     return all_neighbours
 
 
 def all_valid_pairs(obj):
     global VOISINS
-    print("CAlcul des voisins")
+    print("Calcul des pairs valides")
+    tb = time.time()
     valid_pairs = []
-    for v1 in range(0, len(obj.vertices)):
+    for v1 in tqdm(range(0, len(obj.vertices))):
         for voisin in VOISINS[v1]:
             if v1 < voisin:
                 valid_pairs.append((v1, voisin))
+    print('time:', time.time() - tb, "\n")
     return valid_pairs
 
 
@@ -340,21 +346,24 @@ def posContractionV(v1, v2):
 
 
 def calculateAllQ():
+    print("Calcul de toutes les matrices Q")
     res = []
     vertex = obj.only_coordinates()
-    for i in range(len(vertex)):
+    tb = time.time()
+    for i in tqdm(range(len(vertex))):
         res.append(Q(i))
-
+    print("time: ", time.time() - tb, "\n")
     return res
 
 
-Qs = calculateAllQ()
 
 
 def computeContraction(validPairs):
     cost = []
-    for i in range(len(validPairs)):
+    tb = time.time()
+    for i in tqdm(range(len(validPairs))):
         cost.append(errorContractionV(validPairs[i][0], validPairs[i][1]))
+    print("time: ", time.time() - tb, "\n")
     return cost
 
 
@@ -422,39 +431,41 @@ def updatePairsWithV1(heap, list):
 
 
 def main(simplification):
+    global Qs
     if simplification != 0:
         # initialisation
-        print("Initialisation")
+        print("\n###### Simplification des surfaces ######")
         init_label()
         NB_SOMMETS = len(LABEL)
-        print(len(LABEL))
+        print("\nNombre de sommets initiales : ",NB_SOMMETS, "\n")
         init_coordonnees()
         init_faces()
         init_voisins()
 
         # Compute the Q matrices for all the initial vertices
-        print("Compute the Q matrices for all the initial vertices")
-        print(Qs[0])
+        Qs = calculateAllQ()
 
         # Compute the valid pairs
-        print("Compute the valid pairs")
         valid_pairs = all_valid_pairs(obj)
 
         # Compute the cost of each contraction
-        print("Compute the cost of each contraction")
+        print("\nCalcul des couts de contraction")
         res = computeContraction(valid_pairs)
 
         # Place all the pairs in a heap keyed on cost with the minimum cost pair at the top
-        print("Place in the heap")
+        print("\nremplissage du tas")
+        trt = time.time()
         heapTab = convertContractionToHeap(res)
         heapq.heapify(heapTab)
         heapsort(heapTab)
-        print(heapTab)
+        print("time: ", time.time() - trt, "\n")
 
         # Iteratively remove the pair (v1 , v2 ) of least cost from the heap, contract this pair, and update the costs of all valid pairs involving v1.
-        print("removing pairs")
+        print("\nsuppresion des paires")
+        tb = time.time()
         taux_simplification = (NB_SOMMETS / 100) * simplification
         nb_simplification = 0
+        pbar = tqdm(total=nb_simplification)
         while nb_simplification < taux_simplification:
             pair = heapq.heappop(heapTab)
             editCoord(
@@ -474,14 +485,19 @@ def main(simplification):
             updatePairsWithV1(heapTab, to_update)
             heapsort(heapTab)
             nb_simplification += 1
+            pbar.update(1)
+            pbar.set_description("Simplification : %i" % nb_simplification)
+            
 
-        print("show the result of the contraction using the corresponding labels")
+        print("\ntime: ", time.time() - tb, "\n")
         ps_Coord = []
         for i in range(len(COORDONNEES)):
             ps_Coord.append(COORDONNEES[label(i)])
         ps_Coord = np.array(ps_Coord)
 
         ps_Faces = FACES
+
+        print("\nNombre de sommets après simplification : ",len(LABEL)-nb_simplification, "\n")
 
         ps_register = ps.register_surface_mesh("spot", ps_Coord, ps_Faces)
         ps.show()
@@ -496,6 +512,6 @@ def main(simplification):
 
 if __name__ == "__main__":
     taux = input(
-        "Entrez le taux de compression souhaité ( 0 afficher la figure de base ) : \n"
+        "\nEntrez le taux de compression souhaité ( 0 afficher la figure de base ) : \n"
     )
     main(int(taux))
