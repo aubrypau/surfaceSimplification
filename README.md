@@ -7,11 +7,15 @@ numpy
 polyscope
 heapq
 math
+tqdm
+time
 
 -- Utilisation --
 
 Il suffit de lancer le fichier main.py avec python3.
 Le fichier main.py contient un exemple d'utilisation de la fonction de simplification de surface.
+Entre les lignes 20 et 23, il y a les différents fichiers objets que l'on peut charger.
+Il suffit de décommenter celui que l'on veut simplifier et commenter les autres.
 
 La fonction de simplification va demander un taux de simplification puis va ensuite afficher la surface simplifiée.
 Ce taux de simplification est un nombre entre 0 et 100.
