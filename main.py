@@ -196,7 +196,7 @@ def get_all_neighbours(obj):
 
 def all_valid_pairs(obj):
     global VOISINS
-    print("CAlcul des voisins")
+    # print("Calculus of neighbours")
     valid_pairs = []
     for v1 in range(0, len(obj.vertices)):
         for voisin in VOISINS[v1]:
@@ -425,8 +425,8 @@ def updatePairsWithV1(heap, list):
 
 ####### Programme principal ########
 
-
 def main(simplification):
+
     if simplification != 0:
 
         global NB_SOMMETS, LABEL, Qs, COORDONNEES
@@ -434,7 +434,7 @@ def main(simplification):
         print("Initialisation")
         init_label()
         NB_SOMMETS = len(LABEL)
-        print(len(LABEL))
+        print("Vertex number : ", NB_SOMMETS)
         init_coordonnees()
         init_faces()
         init_voisins()
@@ -459,7 +459,7 @@ def main(simplification):
         # print(heapTab)
 
         # Iteratively remove the pair (v1 , v2 ) of least cost from the heap, contract this pair, and update the costs of all valid pairs involving v1.
-        print("removing pairs")
+        print("Removing pairs")
         taux_simplification = (NB_SOMMETS / 100) * simplification
         nb_simplification = 0
         while nb_simplification < taux_simplification:
@@ -482,7 +482,7 @@ def main(simplification):
             heapsort(heapTab)
             nb_simplification += 1
 
-        print("show the result of the contraction using the corresponding labels")
+        print("Show the result of the contraction using the corresponding labels")
         ps_Coord = []
         for i in range(len(COORDONNEES)):
             ps_Coord.append(COORDONNEES[label(i)])
@@ -494,6 +494,7 @@ def main(simplification):
         ps.show()
 
     else:
+        
         print("figure sans simplification")
         ps_register = ps.register_surface_mesh(
             "spot", obj.only_coordinates(), obj.only_faces()
@@ -503,6 +504,6 @@ def main(simplification):
 
 if __name__ == "__main__":
     taux = input(
-        "Entrez le taux de compression souhaité ( 0 afficher la figure de base ) : \n"
+        "Enter the compression ratio ( 0 for the orignal object ) : \n"
     )
     main(int(taux))
