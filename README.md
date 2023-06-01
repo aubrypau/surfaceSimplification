@@ -44,7 +44,7 @@ La programme va alors demander un taux de simplification, il faut en choisir un 
 
 | Taux de compression |    0%    |    25%    |    50%    |    75%    |
 | --------------------|----------|-----------|-----------|-----------|
-| Bunny | <img src="/readme_assets/bunny.png"> <ul>Nb vertex : 502</ul> | <img src="/readme_assets/bunny25.png"> <ul><li>Nb vertex : 376</li><li>time : 2.40s</li></ul> | <img src="/readme_assets/bunny50.png"> <ul><li>Nb vertex : 251</li><li>time : 4.76s</li></ul> | <img src="/readme_assets/bunny75.png"> <ul><li>Nb vertex : 125</li><li>time : 7.26s</li></ul>
-| Octopus | <img src="/readme_assets/octopus.png"> <ul>Nb vertex : 2092</ul> | <img src="/readme_assets/octopus25.png"> <ul><li>Nb vertex : 1569</li><li>time : 37.03s</li></ul> | <img src="/readme_assets/octopus50.png"> <ul><li>Nb vertex : 1046</li><li>time : 76.11s</li></ul> | <img src="/readme_assets/octopus75.png"> <ul><li>Nb vertex : 522</li><li>time : 125.11s</li></ul>
+| Bunny | <img src="/readme_assets/bunny.png"> <ul>vertex : 502</ul> | <img src="/readme_assets/bunny25.png"> <ul><li>vertex : 376</li><li>time : 2.40s</li></ul> | <img src="/readme_assets/bunny50.png"> <ul><li>vertex : 251</li><li>time : 4.76s</li></ul> | <img src="/readme_assets/bunny75.png"> <ul><li>vertex : 125</li><li>time : 7.26s</li></ul>
+| Octopus | <img src="/readme_assets/octopus.png"> <ul>vertex : 2092</ul> | <img src="/readme_assets/octopus25.png"> <ul><li>vertex : 1569</li><li>time : 37.03s</li></ul> | <img src="/readme_assets/octopus50.png"> <ul><li>vertex : 1046</li><li>time : 76.11s</li></ul> | <img src="/readme_assets/octopus75.png"> <ul><li>vertex : 522</li><li>time : 125.11s</li></ul>
 
 
