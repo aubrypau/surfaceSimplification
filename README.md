@@ -1,16 +1,20 @@
-# surfaceSimplification
+# Simplification de surfaces triangulées
 
-Simplification de surfaces triangulées via la méthode Surface simplification using quadric error metric de Garland et Heckbert.
+Ce projet a pour but de simplifier, compresser des surfaces en trois dimensions. Pour cela nous utilisons l'algorithme décrit dans ***Surface Simplification Using Quadric Error Metrics*** de *[Michael Garland](https://www.cs.cmu.edu/afs/cs/user/garland/www/home.html)* et *[Paul S. Heckbert](https://www.cs.cmu.edu/~ph/)* dans le cadre du programme de recherche de l'université [Carnegie Mellon](https://www.cmu.edu/).
 
--- Installations nécessaires --
-numpy
-polyscope
-heapq
-math
-tqdm
-time
+## Installations nécessaires
 
--- Utilisation --
+Pour le bon fonctionnement du programme, il faut installer les modules suivant avec la commande `pip install packageName` ou
+`python3 -m pip install packageName`
+
+* numpy
+* polyscope
+* heapq
+* math
+* tqdm
+* time
+
+## Utilisation 
 
 Il suffit de lancer le fichier main.py avec python3.
 Le fichier main.py contient un exemple d'utilisation de la fonction de simplification de surface.
@@ -21,15 +25,16 @@ La fonction de simplification va demander un taux de simplification puis va ensu
 Ce taux de simplification est un nombre entre 0 et 100.
 Il correspond au pourcentage de sommets que l'on souhaite enlever dans la surface simplifiée.
 
--- Fonctionnement --
+## Résumé de l'algorithme
 
-Pour simplifier une surface, nous avons utilisé la méthode 'Surface simplification using quadric error metric' de Garland et Heckbert.
-Cette méthode consiste à calculer une métrique d'erreur pour chaque sommet de la surface.
-Cette métrique d'erreur est calculée en fonction de la distance entre le sommet et ses voisins.
-On place ensuite chaque couple sommet-voisin dans un tas en fonction de sa métrique d'erreur.
-On fusionne ensuite chaque couple en les retirant du tas et en recalculant la métrique d'erreur du sommet résultant de la fusion.
-On répète cette opération jusqu'à ce que le nombre de sommets de la surface soit égal au nombre de sommets souhaité.
+La méthode décrite dans l'article ne permet que de simplifier des **surfaces triangulées**.
+Et voici les différentes étapes :
+1. Approximer l'erreur **Q** de chaque sommet à l'aide de quadriques.
+2. Sélectionner les paires de sommet valides.
+3. Calculer la contraction optimale de chaque paire, et la nouvelle erreur **Q** de la fusion des deux sommets devient le *coût* de contraction de la paire.
+4. Placer les paires dans un tas en fonction de l'erreur avec celles ayant la plus petite en haut.
+5. Supprimer les paires ayant le plus petit coût, et mettre à jour les coûts impliquants les sommets supprimés.
 
--- Résultats --
+## Résultats 
 
 
