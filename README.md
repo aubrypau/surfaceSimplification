@@ -35,7 +35,8 @@ Il suffit ensuite de lancer le fichier main.py avec la commande `python3 main.py
 
 La programme va alors demander un taux de simplification, il faut en choisir un entre 0 (pour afficher le modèle original) et 99, qui correspond au pourcentage de sommet que l'on veut enlever. La surface simplifiée sera alors affichée après tous les calculs.
 
+## Résultats et discussions
 
-## Résultats 
+[lapin](readme_assets/bunny.png)
 
 
