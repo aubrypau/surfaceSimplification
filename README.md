@@ -26,11 +26,11 @@ Pour le bon fonctionnement du programme, il faut installer les modules suivant a
 
 ## Utilisation 
 
-Le fichier [wavefront.py](https://github.com/aubrypau/surfaceSimplification/blob/main/wavefront.py) contient les fonctions nécessaires à la lecture et l'écriture de fichiers `.obj`. Nous en avons rajouté quelques une adaptées à notre besoin.
-Le fichier [main.py](https://github.com/aubrypau/surfaceSimplification/blob/main/main.py) contient le code permettant de simplifier une surface triangulée. Dans celui-ci nous retrouvons toutes les [étapes](Résumé de l'algorithme) décrites précédement.
-Le dossier [Mesh](https://github.com/aubrypau/surfaceSimplification/tree/main/Mesh) contient tous les fichiers `.obj`.
+Le fichier [wavefront.py](wavefront.py) contient les fonctions nécessaires à la lecture et l'écriture de fichiers `.obj`. Nous en avons rajouté quelques une adaptées à notre besoin.
+Le fichier [main.py](main.py) contient le code permettant de simplifier une surface triangulée. Dans celui-ci nous retrouvons toutes les [étapes](Résumé de l'algorithme) décrites précédement.
+Le dossier [Mesh](/Mesh) contient tous les fichiers `.obj`.
 
-Pour simplifier une surface, il faut choisir le modèle que l'on veut simplifier, pour cela, il faut commenter ou décommenter les lignes nécessaires entre la 20 et 23 du fichier [main.py](https://github.com/aubrypau/surfaceSimplification/blob/main/main.py).
+Pour simplifier une surface, il faut choisir le modèle que l'on veut simplifier, pour cela, il faut commenter ou décommenter les lignes nécessaires entre la 20 et 23 du fichier [main.py](main.py).
 Il suffit ensuite de lancer le fichier main.py avec la commande `python3 main.py`.
 
 La programme va alors demander un taux de simplification, il faut en choisir un entre 0 (pour afficher le modèle original) et 99, qui correspond au pourcentage de sommet que l'on veut enlever. La surface simplifiée sera alors affichée après tous les calculs.
