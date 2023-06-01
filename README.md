@@ -37,6 +37,6 @@ La programme va alors demander un taux de simplification, il faut en choisir un 
 
 ## Résultats et discussions
 
-[lapin](readme_assets/bunny.png)
+![lapin](/readme_assets/bunny.png)
 
 
