@@ -37,6 +37,27 @@ La programme va alors demander un taux de simplification, il faut en choisir un 
 
 ## Résultats et discussions
 
+Octopus vertex : 2092
+Octopus 25% vertex : 1569
+Octopus 25% time : 37.03 s
+
+Octopus 50% vertex : 1046
+Octopus 50% time : 76.11 s
+
+Octopus 75% vertex : 522
+Octopus 75% time : 125.11 s
+
+Bunny vertex : 502
+Bunny 25% vertex : 376
+Bunny 25% time : 2.40 s
+
+Bunny 50% vertex : 251
+Bunny 50% time : 4.76 s
+
+Bunny 75% vertex : 125
+Bunny 75% time : 7.26 s
+
 ![lapin](/readme_assets/bunny.png)
+<img src="/readme_assets/octopus.png" width="100" height="100">
 
 

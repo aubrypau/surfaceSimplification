@@ -441,6 +441,8 @@ def main(simplification):
     global Qs
     if simplification != 0 and simplification < 100:
 
+        debut = time.time()
+
         global NB_SOMMETS, LABEL, Qs, COORDONNEES
         # initialisation
         print("\n###### Surfaces Simplification ######")
@@ -529,6 +531,10 @@ def main(simplification):
         print("\nVertex number after simplification : ",len(LABEL)-nb_simplification, "\n")
 
         ps_register = ps.register_surface_mesh("spot", ps_Coord, ps_Faces)
+
+        fin = time.time()
+
+        print("\n Total execution time : ", fin - debut, "\n")
         ps.show()
 
     else:
