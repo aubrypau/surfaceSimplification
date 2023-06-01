@@ -73,7 +73,7 @@ Bunny 75% time : 7.26 s
 
 | Taux de compression |    0%    |    25%    |    50%    |    75%    |
 | --------------------|----------|-----------|-----------|-----------|
-| Bunny | <img src="/readme_assets/bunny.png"> Nb vertex : 2092 | <img src="/readme_assets/bunny25.png"> | <img src="/readme_assets/bunny50.png"> | <img src="/readme_assets/bunny75.png">
+| Bunny | <img src="/readme_assets/bunny.png"> <ul>Nb vertex : 2092</ul> | <img src="/readme_assets/bunny25.png"> | <img src="/readme_assets/bunny50.png"> | <img src="/readme_assets/bunny75.png">
 | Octopus | <img src="/readme_assets/octopus.png"> Nb vertex : 502 | <img src="/readme_assets/octopus25.png"> | <img src="/readme_assets/octopus50.png"> | <img src="/readme_assets/octopus75.png">
 
 
