@@ -18,18 +18,9 @@ Qs = []
 ps.init()
 
 # obj = load_obj("Mesh/hourglass_ico.obj")      # hourglass
-obj = load_obj("Mesh/octopus.obj")            # octopus
+# obj = load_obj("Mesh/octopus.obj")            # octopus
 # obj = load_obj( 'Mesh/tet.obj')               # pyramide
-# obj = load_obj( 'Mesh/lapin.obj')             # lapin
-
-
-# `verts` is a Nx3 numpy array of vertex positions
-# `faces` is a Fx3 array of indices, or a nested list
-# verts=np.array([[1.,0.,0.],[0.,1.,0.],[-1.,0.,0.],[0.,-1.,0.],[0.,0.,1.]])
-# faces=[[0,1,2,3],[1,0,4],[2,1,4],[3,2,4],[0,3,4]]
-# ps.register_surface_mesh("my mesh", verts, faces )
-# bdry  = obj.numpy_boundary_edges()
-# ps_net= ps.register_curve_network("boundary", obj.only_coordinates(), bdry )
+obj = load_obj( 'Mesh/lapin.obj')             # lapin
 
 
 def init_label():
@@ -310,10 +301,10 @@ def errorContractionV(v1, v2):
 
 def posContractionV(v1, v2):
     global Qs
-    coorV1 = obj.get_coord(label(v1))
-    coorV2 = obj.get_coord(label(v2))
-    Q1 = Qs[label(v1)]
-    Q2 = Qs[label(v2)]
+    coorV1 = obj.get_coord(v1)
+    coorV2 = obj.get_coord(v2)
+    Q1 = Qs[v1]
+    Q2 = Qs[v2]
 
     coorV3 = moyPointContraction(coorV1, coorV2)
     Q3 = Q1 + Q2
@@ -337,7 +328,6 @@ def posContractionV(v1, v2):
         resPos = coorV2
     else:
         resPos = coorV3
-
     return resPos
 
 
@@ -397,9 +387,6 @@ def label(i):
 
 def union(i, j):
     global LABEL
-    for k in range(len(LABEL)):
-        if LABEL[k] == label(i):
-            LABEL[k] = label(j)
     LABEL[label(i)] = label(j)
 
 
@@ -433,6 +420,17 @@ def updatePairsWithV1(heap, list):
         heap[list[i]][0] = errorContractionV(heap[list[i]][1][0], heap[list[i]][1][1])[
             0
         ]
+
+def delete_same_pair(heap, v1):
+    res = []
+    inter = []
+    pairv1 = getPairsWithV1(heap, v1)
+    for pair in pairv1:
+        if (label(heap[pair][1][0]), label(heap[pair][1][1])) in inter or (label(heap[pair][1][1]), label(heap[pair][1][0])) in inter:
+            res.append(pair)
+        else:
+            inter.append((label(heap[pair][1][0]), label(heap[pair][1][1])))
+    return res
 
 
 ####### Programme principal ########
@@ -481,45 +479,81 @@ def main(simplification):
         nb_simplification = 0
         pbar = tqdm(total=nb_simplification)
         while nb_simplification < taux_simplification:
+
+            # print("\n\n########### SIMPLIFICATION n°", nb_simplification+1, "###########")
+            
             pair = heapq.heappop(heapTab)
-            # print("###############")
-            # print("v1 : ",pair[1][0], "représenté par ", label(pair[1][0]))
-            # print(COORDONNEES[label(pair[1][0])])
-            # print("v2 : ",pair[1][1], "représenté par ", label(pair[1][1]))
-            # print(COORDONNEES[label(pair[1][1])])
-            # print("position contraction : ",posContractionV(label(pair[1][0]), label(pair[1][1])))
-            # print(heapTab)
-            # print(len(heapTab))
-            # print("---------------")
-            editCoord(
-                LABEL[pair[1][1]], posContractionV(label(pair[1][0]), label(pair[1][1]))
-            )
-            editCoord(
-                LABEL[pair[1][0]], posContractionV(label(pair[1][0]), label(pair[1][1]))
-            )
-            union(pair[1][0], pair[1][1])
-            Qs[label(pair[1][0])] = Qs[label(pair[1][0])] + Qs[label(pair[1][1])]
-            # print("###############")
-            # print("v1 : ",pair[1][0], "représenté par ", label(pair[1][0]))
-            # print(COORDONNEES[label(pair[1][0])])
-            # print("v2 : ",pair[1][1], "représenté par ", label(pair[1][1]))
-            # print(COORDONNEES[label(pair[1][1])])
-            # print("position contraction : ",posContractionV(label(pair[1][0]), label(pair[1][1])))
-            # print(COORDONNEES[pair[1][0]])
-            # print(COORDONNEES[pair[1][1]])
-            # print(heapTab)
-            # print(len(heapTab))
-            # print("---------------")
-            to_update = getPairsWithV1(heapTab, pair[1][1])
-            updatePairsWithV1(heapTab, to_update)
-            to_updateV2 = getPairsWithV1(heapTab, pair[1][0])
-            updatePairsWithV1(heapTab, to_updateV2)
+            v1 = pair[1][0]
+            v2 = pair[1][1]
+
+            # print("\nsimplification de ", label(v1), " et ", label(v2))
+
+            # Calcul de la nouvelle matrice Q
+            Qs[label(v2)] = Qs[label(v1)] + Qs[label(v2)]
+
+
+
+            # On deplace V2 à la position optimal pour la contraction
+            editCoord(label(v2), posContractionV(label(v1), label(v2)))
+
+            # print("position de la contraction : ", posContractionV(label(v1), label(v2)))
+
+
+		    # On recalcul les couts pour les pair qui sont concerné
+
+            # print(getPairsWithV1(heapTab, label(v2)))
+
+            # Contraction de v1 et v2 sur le nouveau point (on réutilise v2)
+            # print("Union des labels")
+            union(label(v1), label(v2))
+
+            # Supprime les pairs qui ont v1 et v2 en commun
+            pair_to_del = delete_same_pair(heapTab, label(v1))
+            pair_to_del.sort(reverse=True)
+            # print("pair à supprimer : ",pair_to_del)
+            # print("cooresponde à : ", [heapTab[i][1] for i in pair_to_del])
+            
+            for pair in pair_to_del:
+                # print("\nsuppression de ", heapTab[pair][1])
+                heapTab.pop(pair)
+
+            # print("état du tas : ", heapTab)
+
+            for pair in heapTab:
+
+                if pair[1][0] != label(pair[1][0]):
+                    pair[1] = (label(pair[1][0]), pair[1][1])
+                if pair[1][1] != label(pair[1][1]):
+                    pair[1] = (pair[1][0], label(pair[1][1]))
+
+            # print("état du tas : ", heapTab)
+
+            # print("mise à jour des couts : ", getPairsWithV1(heapTab, label(v2)))
+
+            updatePairsWithV1(heapTab, getPairsWithV1(heapTab, label(v2)))
+
             heapsort(heapTab)
+
+            # print("état du tas : ", heapTab)
+
+
+
             nb_simplification += 1
+            
             pbar.update(1)
             pbar.set_description("Simplification : %i" % nb_simplification)
             
         print("\ntime: ", time.time() - tb, "\n")
+        
+        print("état du tas : ", heapTab)
+        len(heapTab)
+
+        finLabel = []
+        for lbl in LABEL:
+            if label(lbl) not in finLabel:
+                finLabel.append(label(lbl))
+
+        print(finLabel)
 
         ps_Coord = []
         for i in range(len(COORDONNEES)):
