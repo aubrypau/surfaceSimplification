@@ -50,3 +50,5 @@ La programme va alors demander un taux de simplification, il faut en choisir un 
 Nous pouvons remarquer que malgré un grand taux de compression, les détails du modèle sont conservés, nous arrivons à reconnaitre la forme.
 
 Nous pouvons remarquer cependant certains défauts, comme sur les oreilles du lapin qui se sont "reliées" après la compression. Cela doit être du au fait que la position calculée du nouveau sommet n'est pas très précise. En effet, la nouvelle position n'en n'est pas une qui minimise son erreur quadratique.
+
+Finalement, l'implémentation de l'algorithme est plutôt satisfaisante, même si les temps de compression sont plus longs que ceux annoncés dans l'étude.
