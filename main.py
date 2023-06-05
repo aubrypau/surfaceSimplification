@@ -18,9 +18,9 @@ Qs = []
 ps.init()
 
 # obj = load_obj("Mesh/hourglass_ico.obj")      # hourglass
-# obj = load_obj("Mesh/octopus.obj")            # octopus
+obj = load_obj("Mesh/octopus.obj")            # octopus
 # obj = load_obj( 'Mesh/tet.obj')               # pyramide
-obj = load_obj( 'Mesh/lapin.obj')             # lapin
+# obj = load_obj( 'Mesh/lapin.obj')             # lapin
 
 
 def init_label():
@@ -268,39 +268,6 @@ def moyPointContraction(v1, v2):
 
 def errorContractionV(v1, v2):
     global Qs
-    coorV1 = obj.get_coord(label(v1))
-    coorV2 = obj.get_coord(label(v2))
-    Q1 = Qs[label(v1)]
-    Q2 = Qs[label(v2)]
-
-    coorV3 = moyPointContraction(coorV1, coorV2)
-    Q3 = Q1 + Q2
-
-    V1 = [coorV1[0], coorV1[1], coorV1[2], 1]
-    V1 = np.matrix(V1).T
-
-    V2 = [coorV2[0], coorV2[1], coorV2[2], 1]
-    V2 = np.matrix(V2).T
-
-    V3 = [coorV3[0], coorV3[1], coorV3[2], 1]
-    V3 = np.matrix(V3).T
-
-    q1 = quadraticError(V1, Q1)
-    q2 = quadraticError(V2, Q2)
-    q3 = quadraticError(V3, Q3)
-
-    if q1 < q2 and q1 < q3:
-        resErr = q1
-    elif q2 < q1 and q2 < q3:
-        resErr = q2
-    else:
-        resErr = q3
-
-    return resErr, (v1, v2)
-
-
-def posContractionV(v1, v2):
-    global Qs
     coorV1 = obj.get_coord(v1)
     coorV2 = obj.get_coord(v2)
     Q1 = Qs[v1]
@@ -309,6 +276,45 @@ def posContractionV(v1, v2):
     coorV3 = moyPointContraction(coorV1, coorV2)
     Q3 = Q1 + Q2
 
+    # V1 = [coorV1[0], coorV1[1], coorV1[2], 1]
+    # V1 = np.matrix(V1).T
+
+    # V2 = [coorV2[0], coorV2[1], coorV2[2], 1]
+    # V2 = np.matrix(V2).T
+
+    V3 = [coorV3[0], coorV3[1], coorV3[2], 1]
+    V3 = np.matrix(V3).T
+
+    # q1 = quadraticError(V1, Q1)
+    # q2 = quadraticError(V2, Q2)
+    q3 = quadraticError(V3, Q3)
+
+    # if q1 < q2 and q1 < q3:
+    #     resErr = q1
+    # elif q2 < q1 and q2 < q3:
+    #     resErr = q2
+    # else:
+    resErr = q3
+
+    return resErr, (v1, v2)
+
+
+def posContractionV(v1, v2):
+    global Qs
+    # print("Calcul de la position de contraction")
+    coorV1 = obj.get_coord(v1)
+    coorV2 = obj.get_coord(v2)
+    # print("coorV1 : ", coorV1)
+    # print("coorV2 : ", coorV2)
+    Q1 = Qs[v1]
+    Q2 = Qs[v2]
+    # print("Q1 : ", Q1)
+    # print("Q2 : ", Q2)
+
+    coorV3 = moyPointContraction(coorV1, coorV2)
+    Q3 = Q1 + Q2
+    # print("coorV3 : ", coorV3)
+
     V1 = [coorV1[0], coorV1[1], coorV1[2], 1]
     V1 = np.matrix(V1).T
 
@@ -322,12 +328,19 @@ def posContractionV(v1, v2):
     q2 = quadraticError(V2, Q2)
     q3 = quadraticError(V3, Q3)
 
+    # print("q1 : ", q1)
+    # print("q2 : ", q2)
+    # print("q3 : ", q3)
+
     if q1 < q2 and q1 < q3:
         resPos = coorV1
+        # print("v1")
     elif q2 < q1 and q2 < q3:
         resPos = coorV2
+        # print("v2")
     else:
         resPos = coorV3
+        # print("v3")
     return resPos
 
 
@@ -370,9 +383,11 @@ def convertContractionToHeap(tab):
 
 def heapsort(iterable):
     h = []
-    for value in iterable:
-        heapq.heappush(h, value[0])
-    return [heapq.heappop(h) for i in range(len(h))]
+    while iterable:
+        y = heapq.heappop(iterable)
+        h.append([y[0], y[1]])
+    # print("h : ", h)
+    return h
 
 
 # Gestion des labels
@@ -406,31 +421,53 @@ def editCoord(i, coord):
     global COORDONNEES
     COORDONNEES[i] = coord
 
+def nbLabels():
+    res = []
+    for i in range(len(LABEL)):
+        if i == label(i):
+            res.append(i)
+    return len(res)
 
-def getPairsWithV1(heap, v1):
+
+def getPairsWithV1(heap, v):
     res = []
     for i in range(len(heap)):
-        if heap[i][1][0] == v1 or heap[i][1][1] == v1:
+        if heap[i][1][0] == v or heap[i][1][1] == v:
             res.append(i)
     return res
 
 
 def updatePairsWithV1(heap, list):
     for i in range(len(list)):
-        heap[list[i]][0] = errorContractionV(heap[list[i]][1][0], heap[list[i]][1][1])[
+        # print("update de la pair : ", list[i], " :")
+        # print("avant : ", heap[list[i]])
+        # print("label : ", label(heap[list[i]][1][0]), label(heap[list[i]][1][1]))
+        heap[list[i]][0] = errorContractionV(label(heap[list[i]][1][0]), label(heap[list[i]][1][1]))[
             0
-        ]
+        ].item()
+        # print("apres : ", heap[list[i]])
 
-def delete_same_pair(heap, v1):
+def delete_same_pair(heap, v1, v2):
     res = []
-    inter = []
     pairv1 = getPairsWithV1(heap, v1)
+    pairv2 = getPairsWithV1(heap, v2)
     for pair in pairv1:
-        if (label(heap[pair][1][0]), label(heap[pair][1][1])) in inter or (label(heap[pair][1][1]), label(heap[pair][1][0])) in inter:
-            res.append(pair)
+        if heap[pair][1][0] == v1:
+            for pair2 in pairv2:
+                if (heap[pair][1][1] == heap[pair2][1][0]) or (heap[pair][1][1] == heap[pair2][1][1]):
+                    if not(pair in res):
+                        res.append(pair)
+            if not(pair in res):
+                heap[pair][1] = (v2, heap[pair][1][1])
         else:
-            inter.append((label(heap[pair][1][0]), label(heap[pair][1][1])))
+            for pair2 in pairv2:
+                if (heap[pair][1][0] == heap[pair2][1][0]) or (heap[pair][1][0] == heap[pair2][1][1]):
+                    if not(pair in res):
+                        res.append(pair)
+                if not(pair in res):
+                    heap[pair][1] = (heap[pair][1][0], v2)
     return res
+
 
 
 ####### Programme principal ########
@@ -469,7 +506,9 @@ def main(simplification):
         trt = time.time()
         heapTab = convertContractionToHeap(res)
         heapq.heapify(heapTab)
-        heapsort(heapTab)
+        print(heapTab)
+        heapTab = heapsort(heapTab)
+        print(heapTab)
         print("time: ", time.time() - trt, "\n")
 
         # Iteratively remove the pair (v1 , v2 ) of least cost from the heap, contract this pair, and update the costs of all valid pairs involving v1.
@@ -481,62 +520,69 @@ def main(simplification):
         while nb_simplification < taux_simplification:
 
             # print("\n\n########### SIMPLIFICATION n°", nb_simplification+1, "###########")
+
+            # print(len(heapTab))
+            # print(heapTab)
             
             pair = heapq.heappop(heapTab)
-            v1 = pair[1][0]
-            v2 = pair[1][1]
+            v1 = label(pair[1][0])
+            v2 = label(pair[1][1])
 
-            # print("\nsimplification de ", label(v1), " et ", label(v2))
+            # print("\n", heapTab)
+
+
+
+            # print("\nsimplification de     ", v1, " et ", v2)
+            # print("représentant les noeud", pair[1][0]," et ", pair[1][1])
+
+            # Axiome
+            if (v1 == v2):
+                raise SystemExit('\n Error: Contraciton de deux point deja contracté !! \n')
+
+            # Contraciton
+            union(v1, v2)
+
+            # Calcul des nouvelles coordonnées
+            editCoord(v2, posContractionV(v1, v2))
+
+            # print("nouvelle coordonnées : ", getCoord(v2))
 
             # Calcul de la nouvelle matrice Q
-            Qs[label(v2)] = Qs[label(v1)] + Qs[label(v2)]
+            Qs[v2] = Qs[v1] + Qs[v2]
 
 
+            # Supprime les pairs en double
+            # print(label(v1), label(v2))
 
-            # On deplace V2 à la position optimal pour la contraction
-            editCoord(label(v2), posContractionV(label(v1), label(v2)))
-
-            # print("position de la contraction : ", posContractionV(label(v1), label(v2)))
-
-
-		    # On recalcul les couts pour les pair qui sont concerné
-
-            # print(getPairsWithV1(heapTab, label(v2)))
-
-            # Contraction de v1 et v2 sur le nouveau point (on réutilise v2)
-            # print("Union des labels")
-            union(label(v1), label(v2))
-
-            # Supprime les pairs qui ont v1 et v2 en commun
-            pair_to_del = delete_same_pair(heapTab, label(v1))
-            pair_to_del.sort(reverse=True)
-            # print("pair à supprimer : ",pair_to_del)
-            # print("cooresponde à : ", [heapTab[i][1] for i in pair_to_del])
+            pair_to_del = delete_same_pair(heapTab, v1, v2)
+            pair_to_del.reverse()
+            # print("pair to del : ", pair_to_del)
+            for i in pair_to_del:
+                # print("suppression de la pair : ", heapTab[i])
+                heapTab.pop(i)
             
-            for pair in pair_to_del:
-                # print("\nsuppression de ", heapTab[pair][1])
-                heapTab.pop(pair)
 
-            # print("état du tas : ", heapTab)
-
-            for pair in heapTab:
-
-                if pair[1][0] != label(pair[1][0]):
-                    pair[1] = (label(pair[1][0]), pair[1][1])
-                if pair[1][1] != label(pair[1][1]):
-                    pair[1] = (pair[1][0], label(pair[1][1]))
-
-            # print("état du tas : ", heapTab)
-
-            # print("mise à jour des couts : ", getPairsWithV1(heapTab, label(v2)))
-
-            updatePairsWithV1(heapTab, getPairsWithV1(heapTab, label(v2)))
-
-            heapsort(heapTab)
-
-            # print("état du tas : ", heapTab)
+            # update des pairs impliquant v1 et v2
+            updatePairsWithV1(heapTab, getPairsWithV1(heapTab, v1))
+            updatePairsWithV1(heapTab, getPairsWithV1(heapTab, v2))
 
 
+
+            # Axiome
+            if ( nbLabels() != NB_SOMMETS-nb_simplification-1):
+                raise SystemExit('\n Error:  \n')
+
+            heapq.heapify(heapTab)
+            heapTab = heapsort(heapTab)
+
+            # Axiome
+            for i in range(len(heapTab)-1):
+                if heapTab[i][0] > heapTab[i+1][0]:
+                    # print(heapTab)
+                    raise SystemExit('\n Error: Tas non trié !! \n')
+
+
+            # print("NB label : ", nbLabels())
 
             nb_simplification += 1
             
@@ -553,7 +599,9 @@ def main(simplification):
             if label(lbl) not in finLabel:
                 finLabel.append(label(lbl))
 
-        print(finLabel)
+        print("vertex restant : ", finLabel)
+        for noeud in finLabel:
+            print(COORDONNEES[noeud])
 
         ps_Coord = []
         for i in range(len(COORDONNEES)):
