@@ -264,24 +264,11 @@ def errorContractionV(v1, v2):
     coorV3 = moyPointContraction(coorV1, coorV2)
     Q3 = Q1 + Q2
 
-    # V1 = [coorV1[0], coorV1[1], coorV1[2], 1]
-    # V1 = np.matrix(V1).T
-
-    # V2 = [coorV2[0], coorV2[1], coorV2[2], 1]
-    # V2 = np.matrix(V2).T
-
     V3 = [coorV3[0], coorV3[1], coorV3[2], 1]
     V3 = np.matrix(V3).T
 
-    # q1 = quadraticError(V1, Q1)
-    # q2 = quadraticError(V2, Q2)
     q3 = quadraticError(V3, Q3)
 
-    # if q1 < q2 and q1 < q3:
-    #     resErr = q1
-    # elif q2 < q1 and q2 < q3:
-    #     resErr = q2
-    # else:
     resErr = q3
 
     return resErr, (v1, v2)
