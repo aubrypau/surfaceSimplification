@@ -17,8 +17,8 @@ Qs = []
 
 ps.init()
 
-# obj = load_obj("Mesh/hourglass_ico.obj")      # hourglass
-obj = load_obj("Mesh/octopus.obj")            # octopus
+obj = load_obj("Mesh/hourglass_ico.obj")      # hourglass
+# obj = load_obj("Mesh/octopus.obj")            # octopus
 # obj = load_obj( 'Mesh/tet.obj')               # pyramide
 # obj = load_obj( 'Mesh/lapin.obj')             # lapin
 
@@ -170,18 +170,6 @@ def is_edge(v1, v2):
     return False
 
 
-# def all_valid_pairs(obj):
-#     # compare each pair of vertices and chek if they are valid
-#     valid_pairs = []
-#     for v1 in range (0, len(obj.vertices)):
-#         for v2 in range (0, len(obj.vertices)):
-#             if ( (v1 != v2 and is_edge(v1, v2)) or (v1 != v2 and np.linalg.norm(np.subtract(obj.get_coord(v1), obj.get_coord(v2))) < THRESHOLD_T )):
-#                 if (v1, v2) not in valid_pairs and (v2, v1) not in valid_pairs:
-#                     valid_pairs.append((v1, v2))
-#     print("valid_pairs : ", valid_pairs)
-#     return valid_pairs
-
-
 def get_all_neighbours(obj):
     all_neighbours = []
     print("Compute all neighbours")
@@ -301,19 +289,14 @@ def errorContractionV(v1, v2):
 
 def posContractionV(v1, v2):
     global Qs
-    # print("Calcul de la position de contraction")
+
     coorV1 = obj.get_coord(v1)
     coorV2 = obj.get_coord(v2)
-    # print("coorV1 : ", coorV1)
-    # print("coorV2 : ", coorV2)
     Q1 = Qs[v1]
     Q2 = Qs[v2]
-    # print("Q1 : ", Q1)
-    # print("Q2 : ", Q2)
 
     coorV3 = moyPointContraction(coorV1, coorV2)
     Q3 = Q1 + Q2
-    # print("coorV3 : ", coorV3)
 
     V1 = [coorV1[0], coorV1[1], coorV1[2], 1]
     V1 = np.matrix(V1).T
@@ -328,10 +311,6 @@ def posContractionV(v1, v2):
     q2 = quadraticError(V2, Q2)
     q3 = quadraticError(V3, Q3)
 
-    # print("q1 : ", q1)
-    # print("q2 : ", q2)
-    # print("q3 : ", q3)
-
     if q1 < q2 and q1 < q3:
         resPos = coorV1
         # print("v1")
@@ -344,14 +323,7 @@ def posContractionV(v1, v2):
     return resPos
 
 
-# calculateQofVertex(4)
-# print(Q(22))
-# print(Q(3))
-
-# print(getAllQfromVertex(12))
 # permet de calculer toutes les matrices Q pour touts les sommets
-
-
 def calculateAllQ():
     print("Calcul de toutes les matrices Q")
     res = []
@@ -386,12 +358,10 @@ def heapsort(iterable):
     while iterable:
         y = heapq.heappop(iterable)
         h.append([y[0], y[1]])
-    # print("h : ", h)
     return h
 
 
-# Gestion des labels
-
+####### Gestion des labels ########
 
 def label(i):
     global LABEL
@@ -399,23 +369,15 @@ def label(i):
         i = LABEL[i]
     return i
 
-
 def union(i, j):
     global LABEL
     LABEL[label(i)] = label(j)
 
-
-def find(i, j):
-    if label(i) == label(j):
-        return True
-    else:
-        return False
-
+###################################
 
 def getCoord(i):
     global COORDONNEES
     return COORDONNEES[label(i)]
-
 
 def editCoord(i, coord):
     global COORDONNEES
@@ -439,13 +401,9 @@ def getPairsWithV1(heap, v):
 
 def updatePairsWithV1(heap, list):
     for i in range(len(list)):
-        # print("update de la pair : ", list[i], " :")
-        # print("avant : ", heap[list[i]])
-        # print("label : ", label(heap[list[i]][1][0]), label(heap[list[i]][1][1]))
         heap[list[i]][0] = errorContractionV(label(heap[list[i]][1][0]), label(heap[list[i]][1][1]))[
             0
         ].item()
-        # print("apres : ", heap[list[i]])
 
 def delete_same_pair(heap, v1, v2):
     res = []
@@ -518,22 +476,10 @@ def main(simplification):
         nb_simplification = 0
         pbar = tqdm(total=nb_simplification)
         while nb_simplification < taux_simplification:
-
-            # print("\n\n########### SIMPLIFICATION n°", nb_simplification+1, "###########")
-
-            # print(len(heapTab))
-            # print(heapTab)
             
             pair = heapq.heappop(heapTab)
             v1 = label(pair[1][0])
             v2 = label(pair[1][1])
-
-            # print("\n", heapTab)
-
-
-
-            # print("\nsimplification de     ", v1, " et ", v2)
-            # print("représentant les noeud", pair[1][0]," et ", pair[1][1])
 
             # Axiome
             if (v1 == v2):
@@ -545,27 +491,21 @@ def main(simplification):
             # Calcul des nouvelles coordonnées
             editCoord(v2, posContractionV(v1, v2))
 
-            # print("nouvelle coordonnées : ", getCoord(v2))
 
             # Calcul de la nouvelle matrice Q
             Qs[v2] = Qs[v1] + Qs[v2]
 
 
             # Supprime les pairs en double
-            # print(label(v1), label(v2))
-
             pair_to_del = delete_same_pair(heapTab, v1, v2)
             pair_to_del.reverse()
-            # print("pair to del : ", pair_to_del)
             for i in pair_to_del:
-                # print("suppression de la pair : ", heapTab[i])
                 heapTab.pop(i)
             
 
             # update des pairs impliquant v1 et v2
             updatePairsWithV1(heapTab, getPairsWithV1(heapTab, v1))
             updatePairsWithV1(heapTab, getPairsWithV1(heapTab, v2))
-
 
 
             # Axiome
@@ -578,11 +518,7 @@ def main(simplification):
             # Axiome
             for i in range(len(heapTab)-1):
                 if heapTab[i][0] > heapTab[i+1][0]:
-                    # print(heapTab)
                     raise SystemExit('\n Error: Tas non trié !! \n')
-
-
-            # print("NB label : ", nbLabels())
 
             nb_simplification += 1
             
