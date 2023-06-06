@@ -448,14 +448,10 @@ def main(simplification):
             pair_to_del.reverse()
             for i in pair_to_del:
                 heapTab.pop(i)
-            
-            # print(heapTab)
 
             # update des pairs impliquant v1 et v2
             updatePairsWithV1(heapTab, getPairsWithV1(heapTab, v1))
             updatePairsWithV1(heapTab, getPairsWithV1(heapTab, v2))
-
-            # print(heapTab)
 
             # Axiome
             if ( nbLabels() != NB_SOMMETS-nb_simplification-1):
