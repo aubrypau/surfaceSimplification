@@ -7,7 +7,7 @@ import time
 from tqdm import tqdm
 
 THRESHOLD_T = 0
-MINIMUM_FACES = 10
+MINIMUM_FACES = 5
 LABEL = []
 COORDONNEES = []
 FACES = []
@@ -17,10 +17,12 @@ Qs = []
 
 ps.init()
 
-obj = load_obj("Mesh/hourglass_ico.obj")      # hourglass
+# Choix de l'objet à charger (décommenter l'objet souhaité)
+
+# obj = load_obj("Mesh/hourglass_ico.obj")      # hourglass
 # obj = load_obj("Mesh/octopus.obj")            # octopus
-# obj = load_obj( 'Mesh/tet.obj')               # pyramide
-# obj = load_obj( 'Mesh/lapin.obj')             # lapin
+obj = load_obj( 'Mesh/lapin.obj')             # lapin
+
 
 
 def init_label():
@@ -65,14 +67,6 @@ def getAllFaces(v1):
     return tab
 
 
-# Ici on récupère les faces qui contiennent le sommet numéro 12
-# tab = getAllFaces(12)
-# print("tab : ", tab)
-
-# On récupère ensuite les coordonnées des sommets obtenus
-# print("obj.vertices tab[0][0]: ", obj.only_coordinates()[tab[0][0]])
-# print("obj.vertices tab[0][1]: ", obj.only_coordinates()[tab[0][1]])
-# print("obj.vertices tab[0][2]: ", obj.only_coordinates()[tab[0][2]])
 
 ############ Calculer a b c d pour un plan ############
 
@@ -117,29 +111,6 @@ def scalarProduct(n, P):
     for i in range(3):
         nb += n[i] * P[i]
     return nb
-
-
-# test pour la matrice [ a b c d ]
-# P = [1, 4, 8]
-# R = [2, 5, 4]
-# Q = [6, 2, 3]
-
-# PR = vect(P, R)
-# # print(PR)
-# PQ = vect(P, Q)
-# # print(PQ)
-# PQPR = prodVect(PQ, PR)
-# # print(PQPR)
-
-# norme = normeVect(PQPR)
-# # print(norme)
-
-# n = prodVectNormed(PQPR, norme)
-
-# d = scalarProduct(n, P)
-# # la matrice a b c d
-# n.append(d / norme)
-# print(n)
 
 
 def matrixABCDfromPoints(P, Q, R):
@@ -194,12 +165,6 @@ def all_valid_pairs(obj):
 
 
 ####################################
-
-
-# remove the vertex v1 from the mesh
-def remove_vertex(obj, vertex_index):
-    # Remove the vertex from the vertex list
-    obj.vertices = np.delete(obj.vertices, vertex_index, 0)
 
 
 # Récupère les faces d'un sommet puis calcule la matrice pour chaque face
@@ -273,7 +238,7 @@ def errorContractionV(v1, v2):
 
     return resErr, (v1, v2)
 
-
+# Renvoi la position du point de contraction qui minimise l'erreur quadratique
 def posContractionV(v1, v2):
     global Qs
 
@@ -300,13 +265,10 @@ def posContractionV(v1, v2):
 
     if q1 < q2 and q1 < q3:
         resPos = coorV1
-        # print("v1")
     elif q2 < q1 and q2 < q3:
         resPos = coorV2
-        # print("v2")
     else:
         resPos = coorV3
-        # print("v3")
     return resPos
 
 
@@ -320,7 +282,6 @@ def calculateAllQ():
         res.append(Q(i))
     print("time: ", time.time() - tb, "\n")
     return res
-
 
 
 
@@ -340,6 +301,7 @@ def convertContractionToHeap(tab):
     return res
 
 
+# Tri le tas
 def heapsort(iterable):
     h = []
     while iterable:
@@ -392,6 +354,8 @@ def updatePairsWithV1(heap, list):
             0
         ].item()
 
+
+# suppression des paires qui peuvent être fusionnées après une contraction
 def delete_same_pair(heap, v1, v2):
     res = []
     pairv1 = getPairsWithV1(heap, v1)
@@ -451,9 +415,7 @@ def main(simplification):
         trt = time.time()
         heapTab = convertContractionToHeap(res)
         heapq.heapify(heapTab)
-        print(heapTab)
         heapTab = heapsort(heapTab)
-        print(heapTab)
         print("time: ", time.time() - trt, "\n")
 
         # Iteratively remove the pair (v1 , v2 ) of least cost from the heap, contract this pair, and update the costs of all valid pairs involving v1.
@@ -462,7 +424,7 @@ def main(simplification):
         taux_simplification = (NB_SOMMETS / 100) * simplification
         nb_simplification = 0
         pbar = tqdm(total=nb_simplification)
-        while nb_simplification < taux_simplification:
+        while nb_simplification < taux_simplification and nb_simplification < NB_SOMMETS - MINIMUM_FACES:
             
             pair = heapq.heappop(heapTab)
             v1 = label(pair[1][0])
@@ -513,18 +475,12 @@ def main(simplification):
             pbar.set_description("Simplification : %i" % nb_simplification)
             
         print("\ntime: ", time.time() - tb, "\n")
-        
-        print("état du tas : ", heapTab)
-        len(heapTab)
 
         finLabel = []
         for lbl in LABEL:
             if label(lbl) not in finLabel:
                 finLabel.append(label(lbl))
 
-        print("vertex restant : ", finLabel)
-        for noeud in finLabel:
-            print(COORDONNEES[noeud])
 
         ps_Coord = []
         for i in range(len(COORDONNEES)):
@@ -545,6 +501,7 @@ def main(simplification):
     else:
 
         print("\nObject without simplification")
+        print("\nVertex number : ", len(obj.only_coordinates()), "\n")
         ps_register = ps.register_surface_mesh(
             "spot", obj.only_coordinates(), obj.only_faces()
         )
