@@ -20,8 +20,8 @@ ps.init()
 # Choix de l'objet à charger (décommenter l'objet souhaité)
 
 # obj = load_obj("Mesh/hourglass_ico.obj")      # hourglass
-# obj = load_obj("Mesh/octopus.obj")            # octopus
-obj = load_obj( 'Mesh/lapin.obj')             # lapin
+obj = load_obj("Mesh/octopus.obj")            # octopus
+# obj = load_obj( 'Mesh/lapin.obj')             # lapin
 
 
 
@@ -434,16 +434,14 @@ def main(simplification):
             if (v1 == v2):
                 raise SystemExit('\n Error: Contraciton de deux point deja contracté !! \n')
 
-            # Contraciton
-            union(v1, v2)
-
             # Calcul des nouvelles coordonnées
             editCoord(v2, posContractionV(v1, v2))
 
+            # Contraciton
+            union(v1, v2)
 
             # Calcul de la nouvelle matrice Q
             Qs[v2] = Qs[v1] + Qs[v2]
-
 
             # Supprime les pairs en double
             pair_to_del = delete_same_pair(heapTab, v1, v2)
@@ -451,16 +449,19 @@ def main(simplification):
             for i in pair_to_del:
                 heapTab.pop(i)
             
+            # print(heapTab)
 
             # update des pairs impliquant v1 et v2
             updatePairsWithV1(heapTab, getPairsWithV1(heapTab, v1))
             updatePairsWithV1(heapTab, getPairsWithV1(heapTab, v2))
 
+            # print(heapTab)
 
             # Axiome
             if ( nbLabels() != NB_SOMMETS-nb_simplification-1):
-                raise SystemExit('\n Error:  \n')
+                raise SystemExit('\n Error: Le nombre de sommets n\' est pas proportionel au nombre de simplification effectué \n')
 
+            # Tri du tas
             heapq.heapify(heapTab)
             heapTab = heapsort(heapTab)
 
