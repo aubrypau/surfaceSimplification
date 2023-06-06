@@ -34,7 +34,7 @@ Le fichier [main.py](main.py) contient le code permettant de simplifier une surf
 
 Le dossier [Mesh](/Mesh) contient tous les fichiers `.obj`.
 
-Pour simplifier une surface, il faut choisir le modèle que l'on veut simplifier, pour cela, il faut commenter ou décommenter les lignes nécessaires entre la 20 et 23 du fichier [main.py](main.py).
+Pour simplifier une surface, il faut choisir le modèle que l'on veut simplifier, pour cela, il faut commenter ou décommenter les lignes nécessaires entre la 22 et 24 du fichier [main.py](main.py).
 
 Il suffit ensuite de lancer le fichier main.py avec la commande `python3 main.py`.
 
@@ -44,11 +44,11 @@ La programme va alors demander un taux de simplification, il faut en choisir un 
 
 | Taux de compression |    0%    |    25%    |    50%    |    75%    |
 | --------------------|----------|-----------|-----------|-----------|
-| Bunny | <img src="/readme_assets/bunny.png"> <ul>vertex : 502</ul> | <img src="/readme_assets/bunny25.png"> <ul><li>vertex : 376</li><li>time : 2.40s</li></ul> | <img src="/readme_assets/bunny50.png"> <ul><li>vertex : 251</li><li>time : 4.76s</li></ul> | <img src="/readme_assets/bunny75.png"> <ul><li>vertex : 125</li><li>time : 7.26s</li></ul>
-| Octopus | <img src="/readme_assets/octopus.png"> <ul>vertex : 2092</ul> | <img src="/readme_assets/octopus25.png"> <ul><li>vertex : 1569</li><li>time : 37.03s</li></ul> | <img src="/readme_assets/octopus50.png"> <ul><li>vertex : 1046</li><li>time : 76.11s</li></ul> | <img src="/readme_assets/octopus75.png"> <ul><li>vertex : 522</li><li>time : 125.11s</li></ul>
+| Bunny | <img src="/readme_assets/bunny.png"> <ul>vertex : 502</ul> | <img src="/readme_assets/bunny25.png"> <ul><li>vertex : 376</li><li>time : 1.32s</li></ul> | <img src="/readme_assets/bunny50.png"> <ul><li>vertex : 251</li><li>time : 1.46s</li></ul> | <img src="/readme_assets/bunny75.png"> <ul><li>vertex : 125</li><li>time : 1.58s</li></ul>
+| Octopus | <img src="/readme_assets/octopus.png"> <ul>vertex : 2092</ul> | <img src="/readme_assets/octopus25.png"> <ul><li>vertex : 1569</li><li>time : 21.79s</li></ul> | <img src="/readme_assets/octopus50.png"> <ul><li>vertex : 1046</li><li>time : 24.36s</li></ul> | <img src="/readme_assets/octopus75.png"> <ul><li>vertex : 522</li><li>time : 25.80s</li></ul>
 
-Nous pouvons remarquer que malgré un grand taux de compression, les détails du modèle sont conservés, nous arrivons à reconnaitre la forme.
+Nous pouvons remarquer que malgré un grand taux de compression, les détails du modèle sont conservés, nous arrivons à reconnaitre la forme. Même à 75% de compression, les tentacules de la pieuvre et les oreilles du lapin sont présentes.
 
-Nous pouvons remarquer cependant certains défauts, comme sur les oreilles du lapin qui se sont "reliées" après la compression. Cela doit être du au fait que la position calculée du nouveau sommet n'est pas très précise. En effet, la nouvelle position n'en n'est pas une qui minimise son erreur quadratique.
+Nous pouvons remarquer cependant certains défauts, comme sur les tentacules de la pieuvre qui sont par endroit "reliées" seulement par un sommet après la compression. Cela doit être du au fait que la position calculée du nouveau sommet n'est pas très précise. En effet, la nouvelle position n'en n'est pas une qui minimise son erreur quadratique.
 
-Finalement, l'implémentation de l'algorithme est plutôt satisfaisante, même si les temps de compression sont plus longs que ceux annoncés dans l'étude.
+Finalement, l'implémentation de l'algorithme est plutôt satisfaisante, même si les temps de compression sont plus longs que ceux annoncés dans l'étude, mais ils restent raisonnables.
